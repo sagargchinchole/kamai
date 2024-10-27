@@ -1,27 +1,78 @@
 /* Navbar.css */
+.navbar-container {
+  position: relative;
+  background-color: #333;
+  padding: 1rem;
+}
+
 .navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.hamburger {
+  cursor: pointer;
+  color: white;
+  z-index: 2;
+}
+
+.nav-menu {
+  display: none;
+  flex-direction: column;
+  position: absolute;
+  top: 60px;
+  left: 0;
+  width: 100%;
+  background-color: #333;
+  z-index: 1;
+}
+
+.nav-menu.active {
+  display: flex;
+}
+
+.nav-item {
+  padding: 10px;
+  color: white;
+  text-decoration: none;
+  cursor: pointer;
+  background-color: transparent; /* Transparent background */
+  border: none; /* Remove any button borders */
+  width: 100%; /* Full width */
+  text-align: left; /* Align text to the left */
+}
+
+.nav-item:hover {
+  background-color: #444; /* Hover effect */
+}
+
+/* Ensure the button matches the styling of other nav items */
+.nav-item button {
+  color: white;
+  background-color: transparent;
+  border: none;
+  padding: 10px;
+  cursor: pointer;
+  text-align: left;
+  width: 100%;
+}
+
+.nav-item button:hover {
+  background-color: #444; /* Same hover effect */
+}
+
+/* Responsive Styles */
+@media (min-width: 768px) {
+  .nav-menu {
     display: flex;
-    justify-content: space-around;
-    align-items: center;
-    padding: 1rem;
-    background-color: #333;
-  }
-  
-  .nav-item {
-    color: white;             /* Text color */
-    text-decoration: none;    /* Remove underline from links */
-    margin: 0 1rem;          /* Spacing between items */
-    cursor: pointer;          /* Cursor change on hover */
-    background-color: transparent; /* Ensure no background color */
-    border: none;            /* Remove button border */
-  }
-  
-  .nav-item:hover {
-    color: #ddd;
+    position: static;
+    flex-direction: row;
+    width: auto;
+    background-color: transparent;
   }
 
-  .active {
-    font-weight: bold; /* Highlight active link */
-    border-bottom: 2px solid #ddd; /* Add underline to the active link */
+  .hamburger {
+    display: none;
   }
-  
+}

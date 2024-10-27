@@ -77,14 +77,6 @@ body {
   color: #555;
 }
 
-nav {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1rem;
-  background-color: #007BFF;
-  color: white;
-}
 button {
   background-color: white;
   border: none;
@@ -119,9 +111,6 @@ button {
 }
 
 @media (max-width: 768px) {
-  nav {
-    flex-direction: column;
-  }
   .job-list-container {
     grid-template-columns: 1fr; /* Stack items vertically on small screens */
   }
