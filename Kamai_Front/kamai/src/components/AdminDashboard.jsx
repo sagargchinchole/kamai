@@ -15,7 +15,7 @@ const AdminDashboard = () => {
     const fetchJobsAndUsers = async () => {
       try {
         const token = localStorage.getItem('token');
-        const userResponse = await axios.get('http://localhost:5000/api/profile', {
+        const userResponse = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/profile`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         
@@ -26,10 +26,10 @@ const AdminDashboard = () => {
           return;
         }
 
-        const jobsResponse = await axios.get('http://localhost:5000/api/jobs', {
+        const jobsResponse = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/jobs`, {
           headers: { Authorization: `Bearer ${token}` },
         });
-        const usersResponse = await axios.get('http://localhost:5000/api/users', {
+        const usersResponse = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/users`, {
           headers: { Authorization: `Bearer ${token}` },
         });
 
@@ -47,7 +47,7 @@ const AdminDashboard = () => {
   const deleteJob = async (id) => {
     const token = localStorage.getItem('token');
     try {
-      await axios.delete(`http://localhost:5000/api/jobs/${id}`, {
+      await axios.delete(`${process.env.REACT_APP_BACKEND_URL}/api/jobs/${id}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setJobs(jobs.filter((job) => job._id !== id));

@@ -12,7 +12,7 @@ const ProfilePage = () => {
     const fetchUserProfile = async () => {
       try {
         const token = localStorage.getItem('token');
-        const response = await axios.get('http://localhost:5000/api/profile', {
+        const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/profile`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         setUserData(response.data);
@@ -35,7 +35,7 @@ const ProfilePage = () => {
 
     try {
       await axios.put(
-        'http://localhost:5000/api/profile',
+        `${process.env.REACT_APP_BACKEND_URL}/api/profile`,
         { name: userData.name, email: userData.email, bio: userData.bio },
         {
           headers: { Authorization: `Bearer ${token}` },

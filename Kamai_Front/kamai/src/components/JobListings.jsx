@@ -13,7 +13,7 @@ const JobListings = () => {
   useEffect(() => {
     const fetchJobs = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/api/activeJobs');
+        const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/activeJobs`);
         setJobs(response.data);
         setLoading(false);
       } catch (error) {

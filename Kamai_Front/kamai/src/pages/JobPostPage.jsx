@@ -18,7 +18,7 @@ const JobPostPage = () => {
 
     try {
       await axios.post(
-        'http://localhost:5000/api/jobs',
+        `${process.env.REACT_APP_BACKEND_URL}/api/jobs`,
         { title, description,link,platform,commission,orderAmount },
         { headers: { Authorization: `Bearer ${token}` } }
       );

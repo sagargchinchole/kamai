@@ -15,7 +15,7 @@ const JobDetail = () => {
   useEffect(() => {
     const fetchJobDetails = async () => {
       try {
-        const response = await axios.get(`http://localhost:5000/api/jobs/${jobId}`);
+        const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/jobs/${jobId}`);
         setJob(response.data);
       } catch (error) {
         setError('Error fetching job details');
@@ -32,7 +32,7 @@ const JobDetail = () => {
     try {
       const token = localStorage.getItem('token');
       const response = await axios.post(
-        'http://localhost:5000/api/orders',
+        `${process.env.REACT_APP_BACKEND_URL}/api/orders`,
         { jobId: job._id },
         { headers: { Authorization: `Bearer ${token}` } }
       );
