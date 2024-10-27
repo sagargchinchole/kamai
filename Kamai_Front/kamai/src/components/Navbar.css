@@ -1,0 +1,27 @@
+/* Navbar.css */
+.navbar {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding: 1rem;
+    background-color: #333;
+  }
+  
+  .nav-item {
+    color: white;             /* Text color */
+    text-decoration: none;    /* Remove underline from links */
+    margin: 0 1rem;          /* Spacing between items */
+    cursor: pointer;          /* Cursor change on hover */
+    background-color: transparent; /* Ensure no background color */
+    border: none;            /* Remove button border */
+  }
+  
+  .nav-item:hover {
+    color: #ddd;
+  }
+
+  .active {
+    font-weight: bold; /* Highlight active link */
+    border-bottom: 2px solid #ddd; /* Add underline to the active link */
+  }
+  

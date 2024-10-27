@@ -5,9 +5,9 @@ const router = express.Router();
 const { authenticateToken, authorizeAdmin } = require('./auth');
 // Create a new job (admin only)
 router.post('/jobs', authenticateToken, async (req, res) => {
-    const { title, description, platform, link, commission, orderAmount } = req.body;
+    const { title, description, platform, link, returnAmount, orderAmount } = req.body;
   
-    const job = new Job({ title, description, postedBy: req.user.id, platform, link, commission, orderAmount });
+    const job = new Job({ title, description, postedBy: req.user.id, platform, link, returnAmount, orderAmount });
   
     try {
       await job.save();

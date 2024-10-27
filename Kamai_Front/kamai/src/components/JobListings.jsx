@@ -9,6 +9,7 @@ const JobListings = () => {
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [isAccepted, setIsAccepted] = useState(false);
 
   useEffect(() => {
     const fetchJobs = async () => {
@@ -24,7 +25,24 @@ const JobListings = () => {
 
     fetchJobs();
   }, []);
+  
+  /*const handleAcceptJob = async (job) => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await axios.post(
+        `${process.env.REACT_APP_BACKEND_URL}/api/orders`,
+        { jobId: job._id },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      alert('Job accepted! Order created.');
+      window.open(response.data.jobUrl, '_blank');
+      setIsAccepted(true);
 
+    } catch (error) {
+      console.error(error);
+      alert('Failed to accept job.');
+    }
+  };*/
   if (loading) return <p>Loading...</p>;
   if (error) return <p>{error}</p>;
 
@@ -37,8 +55,14 @@ const JobListings = () => {
             <div className="job-card">
               <Link to={`/jobs/${job._id}`}>
                 <h3>{job.title}</h3>
-                <p>{job.description}</p>
               </Link>
+              <p>{job.description}</p>
+              <p>Order Amount: <b>{job.orderAmount}</b></p>
+              <p>Return Amount: <b>{job.returnAmount}</b></p>
+              <p>Earning: <b>{job.returnAmount - job.orderAmount}</b></p>
+              {/*<button className="accept-button" onClick={handleAcceptJob(job)} disabled={isAccepted}>
+                {isAccepted ? 'Order Accepted' : 'Accept Order'}
+              </button>*/}
             </div>
           ))}
         </ul>

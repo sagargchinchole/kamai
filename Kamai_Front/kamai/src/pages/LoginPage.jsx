@@ -3,7 +3,7 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import './LoginPage.css';
 
-const LoginPage = () => {
+const LoginPage = ({ setIsLoggedIn }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
@@ -13,7 +13,9 @@ const LoginPage = () => {
     try {
       const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/login`, { email, password });
       localStorage.setItem('token', response.data.token);
-      navigate('/dashboard');
+      localStorage.setItem('isLoggedIn', 'true'); 
+      setIsLoggedIn(true);
+      navigate('/');
     } catch (error) {
       console.error('Login failed', error);
     }

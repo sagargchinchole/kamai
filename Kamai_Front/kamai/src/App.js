@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState , useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import LoginPage from './pages/LoginPage';
 import Dashboard from './components/Dashboard';
@@ -11,14 +11,24 @@ import AdminDashboard from './components/AdminDashboard';
 import OrderList from './components/OrderList';
 import Logout from './components/Logout';
 import OrderPage from './pages/OrderPage';
+import Navbar from './components/Navbar';
+import Earning from './components/Earnings';
 
 function App() {
+  const [isLoggedIn, setIsLoggedIn] = useState(() => {
+    return localStorage.getItem('isLoggedIn') === 'true'; // Retrieve login state from localStorage
+  });
+  useEffect(() => {
+    // Update localStorage whenever isLoggedIn changes
+    localStorage.setItem('isLoggedIn', isLoggedIn);
+  }, [isLoggedIn]);
+
   return (
     <Router>
-      <div>
+      <Navbar isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />
       <Routes>
         <Route path="/" element={<JobListings />} />
-        <Route path="/login" element={<LoginPage />} />
+        <Route path="/login" element={<LoginPage setIsLoggedIn={setIsLoggedIn} />} />
         <Route path="/register" element={<RegisterPage />} />  {/* Add route for register page */}
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/profile" element={<ProfilePage />} />
@@ -28,11 +38,9 @@ function App() {
         <Route path="/jobs/:jobId" element={<JobDetail />} />
         <Route path="/orders" element={<OrderList/>}/>
         <Route path="/orders/:id" element={<OrderPage/>}/>
-        <Route path="/logout" element={<Logout/>}/>
-        
+        <Route path="/earnings" element={<Earning/>}/>
+        <Route path="/logout" element={<Logout/>}/> 
       </Routes>
-      
-      </div>
     </Router>
   );
 }

@@ -29,7 +29,10 @@ const orderSchema = new mongoose.Schema({
     type:String
   },
   otp:{
-    type: String
+    type: Number
+  },
+  lastFourDigit:{
+    type: Number
   },
   acceptedDate: {
     type: Date,

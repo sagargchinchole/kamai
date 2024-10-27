@@ -1,28 +1,28 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import './JobPostPage.css'
 
 const JobPostPage = () => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [link, setLink] = useState('');
   const [platform, setPlatform] = useState('');
-  const [commission, setCommission] = useState('');
+  const [returnAmount, setReturnAmount] = useState('');
   const [orderAmount, setAmount] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
-  const navigate = useNavigate();
 
   const handlePostJob = async (e) => {
     e.preventDefault();
     const token = localStorage.getItem('token');
 
     try {
-      await axios.post(
+      const response = await axios.post(
         `${process.env.REACT_APP_BACKEND_URL}/api/jobs`,
-        { title, description,link,platform,commission,orderAmount },
+        { title, description, link, platform, returnAmount, orderAmount },
         { headers: { Authorization: `Bearer ${token}` } }
       );
-      navigate('/dashboard');
+      window.location.reload();
     } catch (error) {
       setErrorMessage('Failed to post job.');
       console.error('Error posting job:', error);
@@ -30,10 +30,10 @@ const JobPostPage = () => {
   };
 
   return (
-    <div className="job-post-page">
-      <h1>Post a Job</h1>
+    <div className="post-job-container">
+      <h2 className="post-job-title">Post a Job</h2>
       {errorMessage && <p className="error">{errorMessage}</p>}
-      <form onSubmit={handlePostJob}>
+      <form onSubmit={handlePostJob} className="post-job-form">
         <input
           type="text"
           placeholder="Job Title"
@@ -70,9 +70,9 @@ const JobPostPage = () => {
         />
         <input
           type="number"
-          placeholder="Commision"
-          value={commission}
-          onChange={(e) => setCommission(e.target.value)}
+          placeholder="Return Amount"
+          value={returnAmount}
+          onChange={(e) => setReturnAmount(e.target.value)}
           required
         />
         <button type="submit">Post Job</button>

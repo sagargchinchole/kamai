@@ -7,7 +7,7 @@ const jobSchema = new mongoose.Schema({
   link: { type: String, required: true },
   platform: { type: String, required: true },
   orderAmount: { type: Number, required: true },
-  commission: {type: Number, required: true},
+  returnAmount: {type: Number, required: true},
   status: {type:String, enum:['active','expired'], default: 'active'}
 });
 
