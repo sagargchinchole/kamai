@@ -1,0 +1,35 @@
+/* File: src/components/JobList.css */
+.job-list-container {
+    display: grid;
+    gap: 1rem;
+    padding: 1rem;
+  }
+
+  .job-list {
+    margin-bottom: 1rem;
+  }
+  
+  .job-list h2 {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+  }
+
+  @media (min-width: 768px) {
+    .job-list-container {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  
+  @media (min-width: 1024px) {
+    .job-list-container {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+  
+  .job-card {
+    padding: 1rem;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+  }
+  

@@ -1,0 +1,26 @@
+/* File: src/components/OrderList.css */
+
+.order-list-container {
+    display: grid;
+    gap: 1rem;
+    padding: 1rem;
+  }
+  
+  .order-card {
+    padding: 1rem;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background-color: #f8f8f8;
+  }
+  
+  .order-card h3 {
+    font-size: 1.25rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  @media (max-width: 768px) {
+    .order-card h3 {
+      font-size: 1rem;
+    }
+  }
+  

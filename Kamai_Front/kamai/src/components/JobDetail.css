@@ -1,0 +1,47 @@
+/* File: src/components/JobDetail.css */
+
+.job-detail-container {
+    max-width: 700px;
+    margin: 0 auto;
+    padding: 1.5rem;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background-color: #ffffff;
+  }
+  
+  .job-detail-title {
+    font-size: 1.75rem;
+    margin-bottom: 1rem;
+  }
+  
+  .job-detail-description {
+    font-size: 1rem;
+    margin-bottom: 1.5rem;
+    color: #333;
+  }
+  
+  .job-detail-status {
+    margin-bottom: 1rem;
+    font-weight: bold;
+  }
+  
+  .accept-button {
+    padding: 0.75rem 1.5rem;
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .accept-button:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+  }
+  
+  @media (max-width: 768px) {
+    .job-detail-title {
+      font-size: 1.5rem;
+    }
+  }
+  
