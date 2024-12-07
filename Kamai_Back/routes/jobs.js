@@ -1,13 +1,14 @@
 const express = require('express');
 const Job = require('../models/Job');
-const router = express.Router();
-
+const router = express.Router(); 
 const { authenticateToken, authorizeAdmin } = require('./auth');
+const {getImageUrl} = require('../utils/imgUrlUtil');
+
 // Create a new job (admin only)
-router.post('/jobs', authenticateToken, async (req, res) => {
+router.post('/jobs', authenticateToken,authorizeAdmin, async (req, res) => {
     const { title, description, platform, link, returnAmount, orderAmount } = req.body;
-  
-    const job = new Job({ title, description, postedBy: req.user.id, platform, link, returnAmount, orderAmount });
+    const imageLink = await getImageUrl(platform, link);
+    const job = new Job({ title, description, postedBy: req.user.id, platform, link, returnAmount, orderAmount, imageLink});
   
     try {
       await job.save();

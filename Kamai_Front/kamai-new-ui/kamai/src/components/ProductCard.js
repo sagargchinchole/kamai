@@ -9,9 +9,7 @@ import CardActionArea from '@mui/material/CardActionArea';
 import Box from '@mui/material/Box';
 import CardActions from '@mui/material/CardActions';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
-import Link from '@mui/material/Link';
 import DealForm from './DealForm';
-const tempImage = "https://m.media-amazon.com/images/I/81u+lUSZRDL._SL1500_.jpg";
 const ProductCard = ({ card }) => {
 
   console.log(card);
@@ -29,7 +27,7 @@ const ProductCard = ({ card }) => {
             <CardMedia
               component="img"
               height="250"
-              image={tempImage}
+              image={card.imageLink}
               sx={{ padding: "1em 1em 0 1em", objectFit: "contain" }}
               alt="green iguana"
             />

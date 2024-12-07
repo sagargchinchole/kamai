@@ -8,7 +8,8 @@ const jobSchema = new mongoose.Schema({
   platform: { type: String, required: true },
   orderAmount: { type: Number, required: true },
   returnAmount: {type: Number, required: true},
-  status: {type:String, enum:['active','expired'], default: 'active'}
+  status: {type:String, enum:['active','expired'], default: 'active'},
+  imageLink: {type:String, required: true }
 });
 
 const Job = mongoose.model('Job', jobSchema);

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { Box, Button, Dialog, DialogTitle, DialogContent, DialogActions, TextField, Alert, Snackbar,MenuItem } from "@mui/material";
-
+import { Box, Button, Dialog, DialogTitle, DialogContent, DialogActions, TextField, Alert, Snackbar, MenuItem } from "@mui/material";
+import axios from "axios";
 const platforms = [
   {
     value: 'Amazon',
@@ -42,10 +42,23 @@ export default function DealForm({ open, onClose, dealData, dialogTitle }) {
   const [openSnackbar, setOpenSnackbar] = useState(false);
   console.log(formData);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
+
+    const token = localStorage.getItem('token');
     e.preventDefault();
-    console.log("Form Submitted:", formData);
-    setOpenSnackbar(true);
+    const title = formData.title;
+    const description = formData.description;
+    const link = formData.link;
+    const platform = formData.platform;
+    const returnAmount = formData.returnAmount;
+    const orderAmount = formData.orderAmount;
+    const response = await axios.post(
+      `${process.env.REACT_APP_BACKEND_URL}/api/jobs`,
+      { title, description, link, platform, returnAmount, orderAmount },
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
+    if (response.status === 201)
+      setOpenSnackbar(true);
   };
 
   const handleChange = (e) => {
