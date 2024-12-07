@@ -11,32 +11,25 @@ import CardActions from '@mui/material/CardActions';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import Link from '@mui/material/Link';
 import DealForm from './DealForm';
-
+const tempImage = "https://m.media-amazon.com/images/I/81u+lUSZRDL._SL1500_.jpg";
 const ProductCard = ({ card }) => {
 
+  console.log(card);
   const title = "Edit deal";
   const [isOpen, setIsOpen] = useState(false);
-  const [dealData, setDealData] = useState({
-    title: "Mi Tv",
-    description: "testing form data",
-    price: "1010101",
-    platform:"Amazon",
-    link:"testingaljlink",
-    returnAmt:"1010101"
-  });
 
   const handleOpen = () => {
     setIsOpen(true);
   };
   return (
     <Card sx={{ maxWidth: 350 }}>
-      <Link href={`/deals/${card.id}`}  underline="none" color="inherit">
+      {/* <Link href={`/deals/${card.id}`}  underline="none" color="inherit"> */}
         <CardActionArea>
           <Box>
             <CardMedia
               component="img"
               height="250"
-              image={card.image}
+              image={tempImage}
               sx={{ padding: "1em 1em 0 1em", objectFit: "contain" }}
               alt="green iguana"
             />
@@ -53,7 +46,7 @@ const ProductCard = ({ card }) => {
               }}
             >
               <img
-                src={card.platform_image}
+                src={`/assets/${card.platform.toLowerCase().replace(/\s+/g, '')}.png`}
                 alt="small overlay"
                 style={{
                   width: '100%',
@@ -65,14 +58,14 @@ const ProductCard = ({ card }) => {
           </Box>
           <CardContent>
             <Typography gutterBottom variant="h5" component="div">
-              Mi Tv 32
+              {card.title}
             </Typography>
             <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-              Earn flat ₹450 cash reward
+              {`Earn flat ₹${card.returnAmount-card.orderAmount} cash reward`}
             </Typography>
           </CardContent>
         </CardActionArea>
-      </Link>
+      {/* </Link> */}
       <CardActions>
         <Button color="primary" sx={{ marginLeft: 'auto' }} onClick={handleOpen}>
           <BorderColorIcon fontSize="small" />
@@ -80,7 +73,7 @@ const ProductCard = ({ card }) => {
         <Button color="primary" sx={{ marginLeft: 'auto' }}>
           <DeleteForeverIcon fontSize="small" />
         </Button>
-        <DealForm open={isOpen} onClose={()=>setIsOpen(false)} dealData={dealData} dialogTitle={title}/>
+        <DealForm open={isOpen} onClose={()=>setIsOpen(false)} dealData={card} dialogTitle={title}/>
       </CardActions>
     </Card>
   );

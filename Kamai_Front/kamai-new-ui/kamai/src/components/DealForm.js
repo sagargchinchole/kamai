@@ -11,7 +11,7 @@ const platforms = [
     label: 'Flipkart',
   },
   {
-    value: 'Reliance_Digital',
+    value: 'Reliance Digital',
     label: 'Reliance Digital',
   },
   {
@@ -23,8 +23,8 @@ const platforms = [
     label: 'Croma',
   },
   {
-    value: 'MIStore',
-    label: 'MI Store',
+    value: 'Mi Store',
+    label: 'Mi Store',
   },
 ];
 
@@ -33,8 +33,8 @@ export default function DealForm({ open, onClose, dealData, dialogTitle }) {
     description: "",
     link: "",
     platform: "",
-    price: "",
-    returnAmt: "",
+    orderAmount: "",
+    returnAmount: "",
     title: "",
   };
 
@@ -109,7 +109,7 @@ export default function DealForm({ open, onClose, dealData, dialogTitle }) {
               variant="outlined"
               type="number"
               name="price"
-              value={formData.price}
+              value={formData.orderAmount}
               onChange={handleChange}
               required
             />
@@ -120,7 +120,7 @@ export default function DealForm({ open, onClose, dealData, dialogTitle }) {
               variant="outlined"
               type="number"
               name="returnAmt"
-              value={formData.returnAmt}
+              value={formData.returnAmount}
               onChange={handleChange}
               required
             />

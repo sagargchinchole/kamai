@@ -8,6 +8,7 @@ import PeopleIcon from '@mui/icons-material/People';
 import PaymentIcon from '@mui/icons-material/Payment';
 import { useNavigate } from 'react-router-dom';
 import { SignInPage } from '@toolpad/core';
+import axios from 'axios';
 
 const NAVIGATION = [
   {
@@ -36,33 +37,33 @@ const NAVIGATION = [
   }
 ]
 
+
 function App() {
+  
+  const AUTHENTICATION = { signIn, signOut };
+  const [session, setSession] = React.useState(null);
 
   const navigate = useNavigate();
   const location = useLocation();
-  const [session, setSession] = React.useState(null);
   // Public routes that don't require authentication
   const publicRoutes = ["/login"];
 
+  async function signIn({ email, password }) {
+    email = "sagar.chinchole@gmail.com";
+    password="sagar"
+    const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/login`, { email, password});
+      localStorage.setItem('token', response.data.token);
+      setSession({user:{email:response.data.user.email,
+        name:response.data.user.name
+      }})
+    console.log(email, password)
+  }
+  
   // Check if the current route is public
   const isPublicRoute = publicRoutes.includes(location.pathname);
 
-  async function signIn({ email, password }) {
-    console.log(email, password)
-    //navigate("/login");
-  }
-
   async function signOut() {
     setSession(null); // Clear the session state
-  }
-
-  async function handleLogin(credentials) {
-    try {
-      const userSession = await signIn(credentials);
-      setSession(userSession); // Update the session state
-    } catch (error) {
-      console.error('Login failed:', error.message);
-    }
   }
 
   // preview-start
@@ -72,13 +73,11 @@ function App() {
   return (
     <AppProvider
       session={session}
-      authentication={{
-        signIn: handleLogin,
-        signOut,
-      }}
+      authentication={AUTHENTICATION}
       navigation={NAVIGATION}
       branding={{ logo: <img src="assets/icon.jpg" />, title: "Kamai" }}
-    ><Outlet />
+    >
+      <Outlet />
       {/* {session || isPublicRoute ? (
         <Outlet />
       ) : (
@@ -88,5 +87,4 @@ function App() {
     </AppProvider>
   );
 }
-
 export default App;

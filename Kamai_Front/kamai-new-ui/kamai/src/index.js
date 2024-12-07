@@ -12,6 +12,10 @@ import SignIn from './pages/SignIn';
 
 const router = createBrowserRouter([
   {
+    path: "/login",
+    Component: (authentication ) => <SignIn authentication={authentication} />
+  },
+  {
     Component: App,
     children: [
       {
@@ -37,10 +41,6 @@ const router = createBrowserRouter([
           {
             path: "/users",
             Component: Users
-          },
-          {
-            path: "/login",
-            Component: SignIn
           },
         ]
       }
