@@ -19,7 +19,7 @@ const orderSchema = new mongoose.Schema({
   },
   status: {
     type: String,
-    enum: ['accepted', 'pending', 'confirmed','shipped', 'ofd', 'delivered', 'completed', 'canceled'],
+    enum: ['accepted','confirmed','shipped', 'ofd', 'delivered','canceled'],
     default: 'accepted',
   },
   productOrderId:{
@@ -37,6 +37,9 @@ const orderSchema = new mongoose.Schema({
   acceptedDate: {
     type: Date,
     default: Date.now,
+  },
+  deliveryDate: {
+    type: Date,
   },
 });
 

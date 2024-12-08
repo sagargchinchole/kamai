@@ -68,8 +68,9 @@ router.delete('/jobs/:id', authenticateToken, authorizeAdmin, async (req, res) =
 
   router.put('/jobs/:id', authenticateToken, authorizeAdmin, async (req, res) => {
     try {
-      const { title, description } = req.body;
-      const job = await Job.findByIdAndUpdate(req.params.id, { title, description }, { new: true });
+      const { title, description, platform, link, returnAmount, orderAmount } = req.body;
+      const job = await Job.findByIdAndUpdate(req.params.id, { title, description, platform, link, returnAmount, orderAmount }, 
+        { new: true });
   
       if (!job) return res.status(404).json({ message: 'Job not found' });
       res.json({ message: 'Job updated successfully', job });

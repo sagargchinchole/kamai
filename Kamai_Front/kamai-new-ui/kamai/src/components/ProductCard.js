@@ -20,9 +20,9 @@ const ProductCard = ({ card }) => {
     setIsOpen(true);
   };
   return (
-    <Card sx={{ maxWidth: 350 }}>
+    <Card sx={{ width: 300, height:450 }}>
       {/* <Link href={`/deals/${card.id}`}  underline="none" color="inherit"> */}
-        <CardActionArea>
+        <CardActionArea sx={{height:400}}>
           <Box>
             <CardMedia
               component="img"
@@ -40,7 +40,7 @@ const ProductCard = ({ card }) => {
                 height: 20, // Size of the small image
                 borderRadius: '10%', // Optional: to make the small image circular
                 overflow: 'hidden',
-                boxShadow: 3, // Optional: to add shadow to the small image
+                boxShadow: 1, // Optional: to add shadow to the small image
               }}
             >
               <img
@@ -55,7 +55,7 @@ const ProductCard = ({ card }) => {
             </Box>
           </Box>
           <CardContent>
-            <Typography gutterBottom variant="h5" component="div">
+            <Typography gutterBottom variant="h6" component="div">
               {card.title}
             </Typography>
             <Typography variant="body2" sx={{ color: 'text.secondary' }}>

@@ -2,7 +2,7 @@ import React from 'react';
 import * as ReactDOM from 'react-dom/client'
 import { createBrowserRouter, RouterProvider,Navigate  } from 'react-router-dom'
 import App from './App';
-import AdminCard from './components/AdminCard';
+import AdminProductList from './components/AdminProductList';
 import Orders from './pages/Orders';
 import Layout from './layout/Layout';
 import ProductDetails from './components/ProductDetails';
@@ -24,7 +24,7 @@ const router = createBrowserRouter([
         children: [
           {
             path: "/deals",
-            Component: AdminCard
+            Component: AdminProductList
           },
           {
             path: "/orders",

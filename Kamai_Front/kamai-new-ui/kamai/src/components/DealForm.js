@@ -36,6 +36,7 @@ export default function DealForm({ open, onClose, dealData, dialogTitle }) {
     orderAmount: "",
     returnAmount: "",
     title: "",
+    _id:""
   };
 
   const [formData, setFormData] = useState(dealData || defaultDealData);
@@ -52,13 +53,24 @@ export default function DealForm({ open, onClose, dealData, dialogTitle }) {
     const platform = formData.platform;
     const returnAmount = formData.returnAmount;
     const orderAmount = formData.orderAmount;
-    const response = await axios.post(
-      `${process.env.REACT_APP_BACKEND_URL}/api/jobs`,
-      { title, description, link, platform, returnAmount, orderAmount },
-      { headers: { Authorization: `Bearer ${token}` } }
-    );
-    if (response.status === 201)
-      setOpenSnackbar(true);
+    if (dialogTitle.includes("Add New Deal")) {
+      const response = await axios.post(
+        `${process.env.REACT_APP_BACKEND_URL}/api/jobs`,
+        { title, description, link, platform, returnAmount, orderAmount },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      if (response.status === 201)
+        setOpenSnackbar(true);
+    }
+    else {
+      const response = await axios.put(
+        `${process.env.REACT_APP_BACKEND_URL}/api/jobs/${formData._id}`,
+        { title, description, link, platform, returnAmount, orderAmount },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      if (response.status === 200)
+        setOpenSnackbar(true);
+    }
   };
 
   const handleChange = (e) => {
@@ -118,10 +130,10 @@ export default function DealForm({ open, onClose, dealData, dialogTitle }) {
             <TextField
               fullWidth
               margin="dense"
-              label="Price"
+              label="Order Amount"
               variant="outlined"
               type="number"
-              name="price"
+              name="orderAmount"
               value={formData.orderAmount}
               onChange={handleChange}
               required
@@ -132,7 +144,7 @@ export default function DealForm({ open, onClose, dealData, dialogTitle }) {
               label="Return Amount"
               variant="outlined"
               type="number"
-              name="returnAmt"
+              name="returnAmount"
               value={formData.returnAmount}
               onChange={handleChange}
               required
@@ -161,7 +173,7 @@ export default function DealForm({ open, onClose, dealData, dialogTitle }) {
         autoHideDuration={3000}
         onClose={() => setOpenSnackbar(false)}
       >
-        <Alert severity="success">Deal created successfully!</Alert>
+        <Alert severity="success">{`Deal ${dialogTitle.includes("Add New Deal")? 'created' : 'updated'} successfully!`}</Alert>
       </Snackbar>
     </Box>
   )

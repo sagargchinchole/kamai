@@ -48,21 +48,6 @@ router.put('/profile', authenticateToken, async (req, res) => {
   }
 });
 
-
-// User Registration
-router.post('/register', async (req, res) => {
-  const { name, email, password, mobile } = req.body;
-  const hashedPassword = await bcrypt.hash(password, 10);
-  const newUser = new User({ name, email, password: hashedPassword, mobile });
-
-  try {
-    await newUser.save();
-    res.status(201).json({ message: 'User registered successfully' });
-  } catch (error) {
-    res.status(400).json({ message: error.message });
-  }
-});
-
 // User Login
 router.post('/login', async (req, res) => {
   const { email, password } = req.body;

@@ -3,7 +3,9 @@ const express = require('express');
 const router = express.Router();
 const { authenticateToken, authorizeAdmin } = require('./auth');
 const Order = require('../models/Order');
-const Job = require('../models/Job')
+const Job = require('../models/Job');
+const User = require('../models/User'); 
+
 // Route to create an order when a job is accepted
 router.post('/orders', authenticateToken, async (req, res) => {
   const { jobId } = req.body;
@@ -30,7 +32,7 @@ router.post('/orders', authenticateToken, async (req, res) => {
 });
 
 // Route to get all orders for a specific user
-router.get('/orders', authenticateToken, async (req, res) => {
+router.get('/myorders', authenticateToken, async (req, res) => {
     const userId = req.user.id; // Assuming you're attaching the user ID to req.user in the authenticateToken middleware
   
     try {
@@ -40,6 +42,29 @@ router.get('/orders', authenticateToken, async (req, res) => {
       res.status(500).json({ message: error.message });
     }
   });
+
+  // Route to get all orders for a specific user
+router.get('/orders', authenticateToken, authorizeAdmin, async (req, res) =>  {
+    try {
+    const orders = await Order.find();
+
+    const detailedOrders = await Promise.all(
+      orders.map(async (order) => {
+        const user = await User.findById(order.userId); // Replace `User` with your actual User model
+        const job = await Job.findById(order.jobId); // Replace `User` with your actual User model
+        return {
+          ...order.toObject(), // Convert Mongoose document to plain object
+          userName: user ? user.name : 'Unknown User', // Add user name to the order
+          productName: job ? job.title : "Unkwon Job"
+        };
+      })
+    );
+
+    res.json(detailedOrders);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
 
   router.get('/orders/:id', async (req, res) => {
     try {

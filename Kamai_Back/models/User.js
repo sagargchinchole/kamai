@@ -4,7 +4,7 @@ const userSchema = new mongoose.Schema({
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
   role: { type: String, default: 'user' },  // 'admin' for admins
-  mobile:{ type: String , required:true },
+  mobile:{ type: String },
   upi:{ type: String },
   accountNo:{ type: String },
   ifsc:{ type: String },
