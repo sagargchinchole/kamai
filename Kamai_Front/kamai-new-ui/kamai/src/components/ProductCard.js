@@ -12,7 +12,6 @@ import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import DealForm from './DealForm';
 const ProductCard = ({ card }) => {
 
-  console.log(card);
   const title = "Edit deal";
   const [isOpen, setIsOpen] = useState(false);
 

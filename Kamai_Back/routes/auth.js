@@ -29,7 +29,7 @@ const authorizeAdmin = (req, res, next) => {
 router.get('/profile', authenticateToken, async (req, res) => {
   try {
     const user = await User.findById(req.user.id);
-    if (!user) return res.sendStatus(404);
+    if (!user) return res.sendStatus(400);
     res.json({ name: user.name, email: user.email, role: user.role, userId: user.id });
   } catch (error) {
     res.status(500).json({ message: error.message });

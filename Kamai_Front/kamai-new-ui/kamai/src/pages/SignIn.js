@@ -1,13 +1,26 @@
 import React from 'react'
 import { SignInPage } from '@toolpad/core';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import { useSession } from '../SessionContext';
+
 const providers = [{ id: 'credentials', name: 'Email and Password' }];
 export default function SignIn() {
-  
-  const handleLogin = async (provider, formData) => {
+
+  const navigate = useNavigate()    ;
+  const {session, setSession } = useSession();  
+  // console.log(handleSignIn);
+  const handleLogin = async (provider, formData, callbackUrl) => {
     const email = formData.get('email');
     const password = formData.get('password');
-    console.log(`email is ${email} password is ${password}`);
-    //await signIn({ email, password });
+    
+    const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/login`, { email, password});
+      localStorage.setItem('token', response.data.token);
+      setSession({user:{email:response.data.user.email,
+        name:response.data.user.name,
+        role:response.data.user.role
+      }})
+      navigate("/");
   };
 
   return (

@@ -41,7 +41,6 @@ export default function DealForm({ open, onClose, dealData, dialogTitle }) {
 
   const [formData, setFormData] = useState(dealData || defaultDealData);
   const [openSnackbar, setOpenSnackbar] = useState(false);
-  console.log(formData);
 
   const handleSubmit = async (e) => {
 
