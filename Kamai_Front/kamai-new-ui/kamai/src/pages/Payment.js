@@ -43,7 +43,7 @@ const historyCols = [
     valueFormatter: ( value) => {
     if (!value) return '';
     const date = new Date(value);
-    return `${date.getDate().toString().padStart(2, '0')}-${date.toLocaleString('en-US', {
+    return `${date.getDate().toString().padStart(2, '0')}-${date.toLocaleString('en-IN', {
       month: 'short',
     })}-${date.getFullYear()}`;
   }, },

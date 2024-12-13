@@ -12,7 +12,7 @@ import SignIn from './pages/SignIn';
 import ProductList from './pages/ProductList';
 import MyOrders from './pages/MyOrders';
 import MyWallet from './pages/MyWallet';
-import OrderDetails from './components/OrderDetails';
+import MyOrderDetails from './pages/MyOrderDetails';
 
 const router = createBrowserRouter([
   {
@@ -56,7 +56,7 @@ const router = createBrowserRouter([
           },
           {
             path: "/myOrders/:id",
-            Component: OrderDetails
+            Component: MyOrderDetails
           },
           {
             path: "wallet",

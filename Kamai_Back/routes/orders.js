@@ -36,8 +36,21 @@ router.get('/myorders', authenticateToken, async (req, res) => {
     const userId = req.user.id; // Assuming you're attaching the user ID to req.user in the authenticateToken middleware
   
     try {
-      const orders = await Order.find({ userId }).populate('jobId'); // Populate with job details if needed
-      res.json(orders);
+      const orders = await Order.find({ userId }); // Populate with job details if needed
+      const detailedOrders = await Promise.all(
+        orders.map(async (order) => {
+          const job = await Job.findById(order.jobId); // Replace `User` with your actual User model
+          return {
+            ...order.toObject(), // Convert Mongoose document to plain object
+            productName: job ? job.title : "Unkwon Job",
+            image: job.imageLink,
+            orderAmount: job.orderAmount,
+            returnAmount: job.returnAmount
+          };
+        })
+      );
+  
+      res.json(detailedOrders);
     } catch (error) {
       res.status(500).json({ message: error.message });
     }
@@ -66,7 +79,7 @@ router.get('/orders', authenticateToken, authorizeAdmin, async (req, res) =>  {
   }
 });
 
-  router.get('/orders/:id', async (req, res) => {
+  router.get('/orders/:id',authenticateToken, async (req, res) => {
     try {
       const order = await Order.findById(req.params.id);
       if (!order) return res.status(404).json({ message: 'Order not found' });
