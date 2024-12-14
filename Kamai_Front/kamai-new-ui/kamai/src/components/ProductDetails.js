@@ -13,11 +13,22 @@ import {
   ListItem,
   ListItemText,
   useTheme,
+  Fab,
 } from "@mui/material";
 import { styled } from "@mui/system";
+import {makeStyles } from '@mui/styles'
+const useStyles = makeStyles(() => ({
+  fab: {
+    position: "fixed",
+    bottom: 16,
+    right: "40%",
+  },
+}));
 
 const ProductDetails = () => {
   
+  const classes = useStyles();
+
   const theme = useTheme();
   const token = localStorage.getItem('token');
 
@@ -48,7 +59,25 @@ const ProductDetails = () => {
     borderRadius: "12px",
     boxShadow: theme.shadows[3],
     padding: theme.spacing(2),
+    mb: 4
   }));
+
+  const handleAccept = async () => {
+    try {
+        const response = await axios.post(
+            `${process.env.REACT_APP_BACKEND_URL}/api/orders`,
+            { jobId: product._id },
+            { headers: { Authorization: `Bearer ${token}` } }
+        );
+        alert('Job accepted! Order created.');
+        window.open(response.data.jobUrl, '_blank');
+
+    } catch (error) {
+        console.error(error);
+        alert('Failed to accept job.');
+    }
+};
+
 
   const HighlightItem = ({ label, value, highlight }) => (
     <Box
@@ -165,12 +194,15 @@ const ProductDetails = () => {
           </HighlightCard>
         </Grid>
       </Grid>
-
-      <Box sx={{ textAlign: "center", mt: 2, mb: 2 }}>
-        <Button variant="contained" color="primary" size="medium">
-          Accept
-        </Button>
-      </Box>
+      <Fab
+      color="primary"
+      aria-label="accept"
+      className={classes.fab}
+      onClick={handleAccept}
+      variant="extended"
+    >
+      Accept
+    </Fab>
     </Box>
   );
 };

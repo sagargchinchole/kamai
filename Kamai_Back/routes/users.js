@@ -5,6 +5,12 @@ const router = express.Router();
 const { authenticateToken, authorizeAdmin } = require('./auth'); // Middleware for authentication
 const User = require('../models/User'); // Assuming User is the model
 const bcrypt = require('bcryptjs');
+const Wallet = require('../models/Wallet');
+
+const createUserWallet = async (userId) => {
+  const wallet = new Wallet({ userId });
+  await wallet.save();
+};
 
 // Route to get all users (admin only)
 router.get('/users', authenticateToken, authorizeAdmin, async (req, res) => {
@@ -24,7 +30,8 @@ router.post('/users', authenticateToken, authorizeAdmin, async (req, res) => {
   try {
     const hashedPassword = await bcrypt.hash(password, 10);
     const newUser = new User({ name, email, password: hashedPassword, mobile });
-    await newUser.save();
+    const savedUser = await newUser.save();
+    createUserWallet(savedUser._id);
     res.status(201).json({ message: 'User registered successfully' });
   } catch (error) {
     res.status(400).json({ message: error.message });
