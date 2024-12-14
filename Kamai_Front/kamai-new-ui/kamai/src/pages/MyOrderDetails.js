@@ -102,7 +102,7 @@ export default function MyOrderDetails() {
               <Typography>
                 {order.name}
               </Typography>
-              <img src={`/assets/${order.platform.toLowerCase().replace(/\s+/g, '')}.png`} height='30' width='70' ></img>
+              <img src={`/assets/${order?.platform?.toLowerCase().replace(/\s+/g, '')}.png`} height='30' width='70' ></img>
             </Stack>
             <Typography variant='caption'><b>Order Id: {order.orderId}</b></Typography>
             <Typography variant='caption'><b>Status: {order.status?.toUpperCase()}</b></Typography>

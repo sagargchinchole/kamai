@@ -20,7 +20,7 @@ export default function SignIn() {
         name:response.data.user.name,
         role:response.data.user.role
       }})
-      navigate("/");
+      navigate("/activeDeals");
   };
 
   return (
