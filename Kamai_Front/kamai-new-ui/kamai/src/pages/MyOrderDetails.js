@@ -1,11 +1,18 @@
-import { Box, Button, Card, Stack, Step, StepLabel, Stepper, TextField, Typography } from '@mui/material'
+import { Box, Button, Card, CardContent, Stack, Step, StepLabel, Stepper, TextField, Typography } from '@mui/material'
 import axios from 'axios';
 import React, { useEffect, useState } from 'react'
 import Grid from '@mui/material/Grid2';
 import { useParams } from 'react-router-dom';
+import CopyToClipboard from 'react-copy-to-clipboard';
+import ContentCopyIcon from "@mui/icons-material/ContentCopy";
+import ArrowCircleDownIcon from '@mui/icons-material/ArrowCircleDown';
+import ArrowCircleUpIcon from '@mui/icons-material/ArrowCircleUp';
+
 export default function MyOrderDetails() {
 
   const token = localStorage.getItem('token');
+  const session = JSON.parse(localStorage.getItem('session'));
+
   const { id } = useParams();
   const [order, setOrder] = useState({});
 
@@ -43,51 +50,142 @@ export default function MyOrderDetails() {
     };
 
     fetchOrderDetails();
-  }, [token, id]);
+  }, [token, id, session]);
 
   return (
     <Box>
-      <Box sx={{ width: '90%', m: 2 }}>
-        <Stepper activeStep={statusMap[order.status]} alternativeLabel>
-          {steps.map((label) => (
-            <Step key={label}>
-              <StepLabel>{label}</StepLabel>
-            </Step>
-          ))}
-        </Stepper>
-        <Grid container spacing={2} sx={{mt:2}} alignItems="center">
-          {/* TextField */}
-          <Grid item xs={8}>
-            <TextField
-              id="outlined-basic"
-              label={TextFieldMap[order.status]}
-              variant="outlined"
-              fullWidth
-              sx={{
-                height: '40',
-                '& .MuiOutlinedInput-root': { height: '40' }, // Ensure consistent height
-              }}
-            />
-          </Grid>
+      <Card sx={{ m: 1 }}>
+        <Box sx={{ width: '90%', m: 1 }}>
+          <Stepper activeStep={statusMap[order.status]} alternativeLabel>
+            {steps.map((label) => (
+              <Step key={label}>
+                <StepLabel>{label}</StepLabel>
+              </Step>
+            ))}
+          </Stepper>
+          <Grid container spacing={2} sx={{ mt: 2 }} alignItems="center">
+            {/* TextField */}
+            <Grid item xs={8}>
+              <TextField
+                id="outlined-basic"
+                label={TextFieldMap[order.status]}
+                variant="outlined"
+                fullWidth
+                sx={{
+                  height: '40',
+                  '& .MuiOutlinedInput-root': { height: '40' }, // Ensure consistent height
+                }}
+              />
+            </Grid>
 
-          {/* Button */}
-          <Grid item xs={4}>
-            <Button
-              variant="contained"
-              size="small"
-              fullWidth
-              sx={{
-                height: 40, // Match TextField height
-              }}
-            >
-              Proceed
-            </Button>
+            {/* Button */}
+            <Grid item xs={4}>
+              <Button
+                variant="contained"
+                size="small"
+                fullWidth
+                sx={{
+                  height: 40, // Match TextField height
+                }}
+              >
+                Save
+              </Button>
+            </Grid>
           </Grid>
-        </Grid>
-      </Box>
+        </Box>
+      </Card>
+      <Card sx={{ m: 1 }}>
+        <CardContent>
+          <Stack direction={'column'} spacing={1}>
+            <Stack direction={'row'} spacing={2}>
+              <img src={order.image} height='50' width='100' ></img>
+              <Typography>
+                {order.name}
+              </Typography>
+              <img src={`/assets/${order.platform.toLowerCase().replace(/\s+/g, '')}.png`} height='30' width='70' ></img>
+            </Stack>
+            <Typography variant='caption'><b>Order Id: {order.orderId}</b></Typography>
+            <Typography variant='caption'><b>Status: {order.status?.toUpperCase()}</b></Typography>
 
-      <Card>
-        
+          </Stack>
+        </CardContent>
+      </Card>
+      <Card sx={{ m: 1 }}>
+        <CardContent>
+          <Typography variant='h6'>Delivery Details</Typography>
+          <Stack direction={'column'} spacing={1} sx={{ ml: 3, mt: 1 }}>
+            <Stack direction="row" alignItems="center" spacing={1}>
+              <Typography variant='body2'>{session?.user?.name} tz </Typography>
+              <CopyToClipboard text={`${session?.user?.name} tz`}>
+                <ContentCopyIcon fontSize='small' />
+              </CopyToClipboard>
+            </Stack>
+            <Stack direction="row" alignItems="center" spacing={1}>
+              <Typography variant='body2'>Nikki Girlz Hostel</Typography>
+              <CopyToClipboard text='Nikki Girlz Hostel'>
+                <ContentCopyIcon fontSize='small' />
+              </CopyToClipboard>
+            </Stack>
+            <Stack direction="row" alignItems="center" spacing={1}>
+              <Typography variant='body2'>Bazaar Samiti</Typography>
+              <CopyToClipboard text='Bazaar Samiti'>
+                <ContentCopyIcon fontSize='small' />
+              </CopyToClipboard>
+            </Stack>
+            <Stack direction="row" alignItems="center" spacing={1}>
+              <Typography variant='body2'>Near Rajeev Ranjan Classes</Typography>
+              <CopyToClipboard text='Near Rajeev Ranjan Classes'>
+                <ContentCopyIcon fontSize='small' />
+              </CopyToClipboard>
+            </Stack>
+            <Stack direction="row" alignItems="center" spacing={1}>
+              <Typography variant='body2'>800016</Typography>
+              <CopyToClipboard text='800016'>
+                <ContentCopyIcon fontSize='small' />
+              </CopyToClipboard>
+            </Stack>
+          </Stack>
+        </CardContent>
+      </Card>
+      <Card sx={{ m: 1 }}>
+        <CardContent>
+          <Typography variant='h6'>Earning Details</Typography>
+          <Grid container xs={4} spacing={1} sx={{mt:1}}>
+            <Card sx={{width:150}}>
+              <CardContent>
+                <Stack direction={'row'}>
+                  <Box maxWidth={'100'}>
+                    <Typography variant='body2'>You'll spend</Typography>
+                    <Typography>{order.orderAmount}</Typography>
+                  </Box>
+                  <ArrowCircleDownIcon sx={{ mt: 2, ml:2 }} color='warning' />
+                </Stack>
+              </CardContent>
+            </Card>
+            <Card sx={{width:150}}>
+              <CardContent>
+                <Stack direction={'row'}>
+                  <Box maxWidth={'100'}>
+                    <Typography variant='body2'>You'll get</Typography>
+                    <Typography>{order.returnAmount}</Typography>
+                  </Box>
+                  <ArrowCircleUpIcon sx={{ mt: 2, ml:2 }} color='info' />
+                </Stack>
+              </CardContent>
+            </Card>
+            <Card sx={{width:150}}>
+              <CardContent>
+                <Stack direction={'row'}>
+                  <Box maxWidth={'100'}>
+                    <Typography variant='body2'>You'll earn</Typography>
+                    <Typography>{order.returnAmount - order.orderAmount}</Typography>
+                  </Box>
+                  <ArrowCircleUpIcon sx={{ mt:2, ml:2 }} color='success' />
+                </Stack>
+              </CardContent>
+            </Card>
+          </Grid>
+        </CardContent>
       </Card>
     </Box>
   )

@@ -63,7 +63,7 @@ function App() {
       session={session}
       authentication={{ signIn, signOut }}
       navigation={currentNavigation}
-      branding={{ logo: <img src="assets/icon.png" alt="Logo" width={50} />, title: "" }}
+      branding={{ logo: <img src="/assets/icon.png" alt="Logo" width={50} />, title: "" }}
     >
       {session || isPublicRoute ? (
         <Outlet />
