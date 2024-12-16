@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import { Box, Button, Dialog, DialogTitle, DialogContent, DialogActions, TextField, Alert, Snackbar,MenuItem } from "@mui/material";
+import { Box, Button, Dialog, DialogTitle, DialogContent, DialogActions, TextField, Alert, Snackbar, MenuItem } from "@mui/material";
+import axios from "axios";
 
 const modes = [
   {
@@ -16,22 +17,31 @@ const modes = [
   }
 ];
 
-export default function AddPayForm({ open, onClose, userId }) {
+export default function AddPayForm({ open, onClose, id }) {
   const defaultPayData = {
     accountNo: "",
     upi: "",
     date: "",
     amount: "",
-    mode: ""
+    mode: "",
+    id: "",
   };
 
   const [formData, setFormData] = useState(defaultPayData);
   const [openSnackbar, setOpenSnackbar] = useState(false);
-  console.log(formData);
 
-  const handleSubmit = (e) => {
+  const token = localStorage.getItem('token');
+
+  const handleSubmit = async (e) => {
+    formData.id = id;
+    console.log(formData);
     e.preventDefault();
-    setOpenSnackbar(true);
+    const response = await axios.post(
+      `${process.env.REACT_APP_BACKEND_URL}/api/wallet/debit`, formData,
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
+    if (response.status === 200)
+      setOpenSnackbar(true);
   };
 
   const handleChange = (e) => {

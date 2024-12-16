@@ -2,7 +2,7 @@ import { Box, Button, Card, CardContent, Stack, Step, StepLabel, Stepper, TextFi
 import axios from 'axios';
 import React, { useEffect, useState } from 'react'
 import Grid from '@mui/material/Grid2';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import ArrowCircleDownIcon from '@mui/icons-material/ArrowCircleDown';
@@ -10,11 +10,13 @@ import ArrowCircleUpIcon from '@mui/icons-material/ArrowCircleUp';
 
 export default function MyOrderDetails() {
 
+  const navigate = useNavigate();
   const token = localStorage.getItem('token');
   const session = JSON.parse(localStorage.getItem('session'));
 
   const { id } = useParams();
   const [order, setOrder] = useState({});
+  const [inputValue, setInputValue] = useState('');
 
   const [statusMap] = useState({
     'accepted': 1,
@@ -50,7 +52,30 @@ export default function MyOrderDetails() {
     };
 
     fetchOrderDetails();
-  }, [token, id, session]);
+  }, []);
+
+  const handleSave = async (currentStatus) => {
+    const payload = {};
+    if (currentStatus === 'accepted') {
+      payload.productOrderId = inputValue;
+      payload.status = "confirmed";
+    } else if (currentStatus === 'confirmed') {
+      payload.shippingId = inputValue;
+      payload.status = "shipped";
+    } else if (currentStatus === 'shipped') {
+      const fields = inputValue.split('-');
+      payload.otp = fields[0];
+      payload.mobileLast4Digits = fields[1]
+      payload.status = "ofd";
+    }
+    const response = await axios.patch(`${process.env.REACT_APP_BACKEND_URL}/api/orders/${id}`, payload,
+      { headers: { Authorization: `Bearer ${token}` } });
+    window.location.reload();
+  }
+
+  const handleInputChange = (event) => {
+    setInputValue(event.target.value);
+  };
 
   return (
     <Box>
@@ -63,35 +88,40 @@ export default function MyOrderDetails() {
               </Step>
             ))}
           </Stepper>
-          <Grid container spacing={2} sx={{ mt: 2 }} alignItems="center">
-            {/* TextField */}
-            <Grid item xs={8}>
-              <TextField
-                id="outlined-basic"
-                label={TextFieldMap[order.status]}
-                variant="outlined"
-                fullWidth
-                sx={{
-                  height: '40',
-                  '& .MuiOutlinedInput-root': { height: '40' }, // Ensure consistent height
-                }}
-              />
-            </Grid>
+          {(order.status === 'delivered' || order.status === "ofd") ? <></> :
+            <Grid container spacing={2} sx={{ mt: 2 }} alignItems="center">
+              {/* TextField */}
+              <Grid item xs={8}>
+                <TextField
+                  id="outlined-basic"
+                  label={TextFieldMap[order.status]}
+                  variant="outlined"
+                  fullWidth
+                  sx={{
+                    height: '40',
+                    '& .MuiOutlinedInput-root': { height: '40' }, // Ensure consistent height
+                  }}
+                  value={inputValue}
+                  onChange={handleInputChange}
+                />
+              </Grid>
 
-            {/* Button */}
-            <Grid item xs={4}>
-              <Button
-                variant="contained"
-                size="small"
-                fullWidth
-                sx={{
-                  height: 40, // Match TextField height
-                }}
-              >
-                Save
-              </Button>
+              {/* Button */}
+              <Grid item xs={4}>
+                <Button
+                  variant="contained"
+                  size="small"
+                  fullWidth
+                  sx={{
+                    height: 40, // Match TextField height
+                  }}
+                  onClick={() => handleSave(order.status)}
+                >
+                  Save
+                </Button>
+              </Grid>
             </Grid>
-          </Grid>
+          }
         </Box>
       </Card>
       <Card sx={{ m: 1 }}>
@@ -150,37 +180,37 @@ export default function MyOrderDetails() {
       <Card sx={{ m: 1 }}>
         <CardContent>
           <Typography variant='h6'>Earning Details</Typography>
-          <Grid container xs={4} spacing={1} sx={{mt:1}}>
-            <Card sx={{width:150}}>
+          <Grid container xs={4} spacing={1} sx={{ mt: 1 }}>
+            <Card sx={{ width: 150 }}>
               <CardContent>
                 <Stack direction={'row'}>
                   <Box maxWidth={'100'}>
                     <Typography variant='body2'>You'll spend</Typography>
                     <Typography>{order.orderAmount}</Typography>
                   </Box>
-                  <ArrowCircleDownIcon sx={{ mt: 2, ml:2 }} color='warning' />
+                  <ArrowCircleDownIcon sx={{ mt: 2, ml: 2 }} color='warning' />
                 </Stack>
               </CardContent>
             </Card>
-            <Card sx={{width:150}}>
+            <Card sx={{ width: 150 }}>
               <CardContent>
                 <Stack direction={'row'}>
                   <Box maxWidth={'100'}>
                     <Typography variant='body2'>You'll get</Typography>
                     <Typography>{order.returnAmount}</Typography>
                   </Box>
-                  <ArrowCircleUpIcon sx={{ mt: 2, ml:2 }} color='info' />
+                  <ArrowCircleUpIcon sx={{ mt: 2, ml: 2 }} color='info' />
                 </Stack>
               </CardContent>
             </Card>
-            <Card sx={{width:150}}>
+            <Card sx={{ width: 150 }}>
               <CardContent>
                 <Stack direction={'row'}>
                   <Box maxWidth={'100'}>
                     <Typography variant='body2'>You'll earn</Typography>
                     <Typography>{order.returnAmount - order.orderAmount}</Typography>
                   </Box>
-                  <ArrowCircleUpIcon sx={{ mt:2, ml:2 }} color='success' />
+                  <ArrowCircleUpIcon sx={{ mt: 2, ml: 2 }} color='success' />
                 </Stack>
               </CardContent>
             </Card>

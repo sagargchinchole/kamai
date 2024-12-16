@@ -9,91 +9,23 @@ import {
 } from '@mui/x-data-grid';
 import AccountDetails from '../components/AccountDetails';
 import AddPayForm from '../components/AddPayForm';
-
-const paymentRows = [
-  {
-    "username": "Alice Johnson",
-    "balance": 150.25,
-    "id": "1"
-  },
-  {
-    "username": "Bob Smith",
-    "balance": 1200.50,
-    "id": "2"
-  },
-  {
-    "username": "Charlie Davis",
-    "balance": 87.40,
-    "id": "3"
-  },
-  {
-    "username": "Diana Moore",
-    "balance": 405.00,
-    "id": "4"
-  },
-  {
-    "username": "Edward Brown",
-    "balance": 935.75,
-    "id": "5"
-  }
-];
+import axios from 'axios';
 
 const historyCols = [
-  { field: 'paymentDate', headerName: 'Payment Date', type: 'date', width: 125, 
-    valueFormatter: ( value) => {
-    if (!value) return '';
-    const date = new Date(value);
-    return `${date.getDate().toString().padStart(2, '0')}-${date.toLocaleString('en-IN', {
-      month: 'short',
-    })}-${date.getFullYear()}`;
-  }, },
+  {
+    field: 'date', headerName: 'Payment Date', type: 'date', width: 125,
+    valueFormatter: (value) => {
+      if (!value) return '';
+      const date = new Date(value);
+      return `${date.getDate().toString().padStart(2, '0')}-${date.toLocaleString('en-IN', {
+        month: 'short',
+      })}-${date.getFullYear()}`;
+    },
+  },
   { field: 'amount', headerName: 'Amount', width: 80 },
   { field: 'accountNo', headerName: 'AccountNo', width: 125 },
   { field: 'upi', headerName: 'UPI', width: 125 },
-  { field: 'mode', headerName: 'Mode', width: 80 },
-]
-
-const historyRow = [
-{
-  "paymentDate": "2024-12-01",
-  "amount": 500.00,
-  "accountNo": "1234567890",
-  "upi": null,
-  "mode": "CDM",
-  "id":10
-},
-{
-  "paymentDate": "2024-12-02",
-  "amount": 1200.50,
-  "accountNo": null,
-  "upi": "alice@upi",
-  "mode": "UPI",
-  "id":20
-},
-{
-  "paymentDate": "2024-12-03",
-  "amount": 750.00,
-  "accountNo": "9876543210",
-  "upi": null,
-  "mode": "IMPS",
-  "id":30
-},
-{
-  "paymentDate": "2024-12-04",
-  "amount": 300.75,
-  "accountNo": null,
-  "upi": "bob@upi",
-  "mode": "UPI",
-  "id":40
-},
-{
-  "paymentDate": "2024-12-05",
-  "amount": 1000.00,
-  "accountNo": "1122334455",
-  "upi": null,
-  "mode": "CDM",
-  "id":50
-}
+  { field: 'paymentMode', headerName: 'Mode', width: 80 },
 ]
 
 const accountDetails = {
@@ -104,8 +36,10 @@ const accountDetails = {
 };
 
 export default function Payment() {
+  const [wallets, setWallets] = React.useState([]);
+  const [transactions, setTransactions] = React.useState([]);
   const columns = [
-    { field: 'username', headerName: 'User Name', width: 125 },
+    { field: 'userName', headerName: 'User Name', width: 125 },
     {
       field: 'balance', headerName: 'Balance', type: 'number', width: 125,
     },
@@ -127,13 +61,13 @@ export default function Payment() {
           <GridActionsCellItem
             icon={<Tooltip title="Show Account Details"><AccountBalanceIcon color='primary' /></Tooltip>}
             label="Account Details"
-            onClick={handleDetailsClick(id)}
+            onClick={()=>handleDetailsClick(id)}
             color="inherit"
           />,
           <GridActionsCellItem
             icon={<Tooltip title="Add Payment"><CreditScoreIcon color='primary' /></Tooltip>}
             label="Pay"
-            onClick={handlePayClick(id)}
+            onClick={()=>handlePayClick(id)}
             color="inherit"
           />,
         ];
@@ -142,51 +76,77 @@ export default function Payment() {
   ];
 
   const [isHistoryClicked, setIsHistoryClicked] = React.useState(false);
-  
-  const handleHistoryClick = (id) => () => {
+  const [currentWalletId, setCurrentWalletId] = React.useState('test');
+
+  const handleHistoryClick = (id) => async () => {
+    const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/wallets/transactions`,
+      { id }, { headers: { Authorization: `Bearer ${token}` } });
+    setTransactions(response.data.transactions.filter(transaction => transaction.type === 'debit'));
+    console.log("transactions are "+ transactions);
     setIsHistoryClicked(true);
   };
-  const handleDetailsClick = (id) => () => { 
+
+  const handleDetailsClick = (id) => () => {
     setIsHistoryClicked(false);
     setDialogOpen(true)
   };
 
-  const handlePayClick = (id) => () => {
-    setPayFormOpen(true)
-   };
+  const handlePayClick = (id) => {
+    console.log(id);
+    setCurrentWalletId(id);
+    setPayFormOpen(true);
+  };
 
   const [dialogOpen, setDialogOpen] = React.useState(false);
   const handleClose = () => setDialogOpen(false);
-  
+
   const [payFormOpen, setPayFormOpen] = React.useState(false);
   const handlPayFormeClose = () => setPayFormOpen(false);
+
+  const token = localStorage.getItem('token');
+  React.useEffect(() => {
+    const fetchWallets = async () => {
+      try {
+        const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/wallets/all`,
+          { headers: { Authorization: `Bearer ${token}` } });
+        setWallets(response.data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    fetchWallets();
+  }, []);
 
   return (
     <Paper sx={{ height: 310, m: 1, width: '99%' }}>
       <DataGrid
         rowHeight={40}
-        rows={paymentRows}
+        rows={wallets}
         columns={columns}
         pageSizeOptions={[5, 10]}
         sx={{ border: 0 }}
         disableRowSelectionOnClick
+        getRowId={(row) => row._id}
       />
-      {isHistoryClicked ? (<Box><Typography sx={{ml:1, mt:1}}>History</Typography><DataGrid
+      {isHistoryClicked ? (<Box><Typography sx={{ ml: 1, mt: 1 }}>History</Typography><DataGrid
         rowHeight={30}
-        rows={historyRow}
+        rows={transactions}
         columns={historyCols}
         pageSizeOptions={[5, 10]}
         sx={{ border: 0 }}
         disableRowSelectionOnClick
-      /></Box>) : (<></>) }
-      <AccountDetails 
-      open={dialogOpen}
-      onClose={handleClose}
-      accountDetails={accountDetails}
+        getRowId={(row) => row._id}
+      /></Box>) : (<></>)}
+      <AccountDetails
+        open={dialogOpen}
+        onClose={handleClose}
+        accountDetails={accountDetails}
       />
       <AddPayForm
-      open={payFormOpen}
-      onClose={handlPayFormeClose}
+        id={currentWalletId}
+        open={payFormOpen}
+        onClose={handlPayFormeClose}
       />
 
     </Paper>

@@ -89,10 +89,10 @@ router.get('/orders/:id', authenticateToken, async (req, res) => {
     const orderWithJobDetails = {
       ...order.toObject(),
       platform: job.platform,
-      image:job.imageLink,
-      name:job.title,
-      returnAmount:job.returnAmount,
-      orderAmount:job.orderAmount
+      image: job.imageLink,
+      name: job.title,
+      returnAmount: job.returnAmount,
+      orderAmount: job.orderAmount
     };
     res.json(orderWithJobDetails);
   } catch (error) {
@@ -101,12 +101,32 @@ router.get('/orders/:id', authenticateToken, async (req, res) => {
   }
 });
 
-router.patch('/orders/:id', async (req, res) => {
+router.patch('/orders/:id', authenticateToken, async (req, res) => {
   try {
     const { status, productOrderId, shippingId, otp, mobileLast4Digits } = req.body;
 
+    if (status != "delivered") {
+      const updatedOrder = await Order.findByIdAndUpdate(
+        req.params.id,
+        { status, productOrderId, shippingId, otp, mobileLast4Digits },
+        { new: true }
+      );
+
+      if (!updatedOrder) return res.status(404).json({ message: 'Order not found' });
+      res.json(updatedOrder);
+    }
+  } catch (error) {
+    console.error('Error updating order:', error);
+    res.status(500).json({ message: 'Failed to update order' });
+  }
+});
+
+router.patch('/orders', authenticateToken, authorizeAdmin, async (req, res) => {
+  try {
+    const { orderId, status, productOrderId, shippingId, otp, mobileLast4Digits } = req.body;
+
     const updatedOrder = await Order.findByIdAndUpdate(
-      req.params.id,
+      orderId,
       { status, productOrderId, shippingId, otp, mobileLast4Digits },
       { new: true }
     );

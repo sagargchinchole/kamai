@@ -6,7 +6,7 @@ const User = require('../models/User'); // Assuming you have a User model
 const { authenticateToken, authorizeAdmin } = require('./auth');
 
 // Get wallet details for a user
-router.get('/wallet/:userId',authenticateToken, authorizeAdmin, async (req, res) => {
+router.get('/wallet/:userId', authenticateToken, authorizeAdmin, async (req, res) => {
   try {
     const wallet = await Wallet.findOne({ userId: req.params.userId });
     if (!wallet) return res.status(404).json({ message: 'Wallet not found' });
@@ -45,9 +45,9 @@ router.post('/wallet/credit', authenticateToken, authorizeAdmin, async (req, res
 
 // Debit amount from wallet when admin makes a bank payment
 router.post('/wallet/debit', authenticateToken, authorizeAdmin, async (req, res) => {
-  const { userId, amount, description } = req.body;
+  const { id, amount, description, accountNo, mode, upi } = req.body;
   try {
-    const wallet = await Wallet.findOne({ userId });
+    const wallet = await Wallet.findById(id);
 
     if (!wallet) {
       return res.status(404).json({ message: 'Wallet not found' });
@@ -63,7 +63,10 @@ router.post('/wallet/debit', authenticateToken, authorizeAdmin, async (req, res)
       type: 'debit',
       amount,
       description: description || 'Admin payment to bank',
-      balanceAmount
+      balanceAmount,
+      accountNo,
+      paymentMode: mode,
+      upi
     });
 
     await wallet.save();
@@ -74,21 +77,55 @@ router.post('/wallet/debit', authenticateToken, authorizeAdmin, async (req, res)
 });
 
 router.get('/wallet', authenticateToken, async (req, res) => {
-    const userId = req.user.id;
-    try {
-      const wallet = await Wallet.findOne({ userId }).populate({
-        path: "transactions",
-        options: { sort: { date: -1 } },
-      });
-  
-      if (!wallet) {
-        return res.status(404).json({ message: 'Wallet not found' });
-      }
-  
-      res.json(wallet);
-    } catch (error) {
-      res.status(500).json({ error: error.message });
-    }
-  });
+  const userId = req.user.id;
+  try {
+    const wallet = await Wallet.findOne({ userId }).populate({
+      path: "transactions",
+      options: { sort: { date: -1 } },
+    });
 
-  module.exports = router;
+    if (!wallet) {
+      return res.status(404).json({ message: 'Wallet not found' });
+    }
+
+    res.json(wallet);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+router.get('/wallets/all', authenticateToken, authorizeAdmin, async (req, res) => {
+  try {
+    const wallets = await Wallet.find().select('-transactions');
+    const detailedWallets = await Promise.all(
+      wallets.map(async (order) => {
+        const user = await User.findById(order.userId); // Replace `User` with your actual User model
+        return {
+          ...order.toObject(), // Convert Mongoose document to plain object
+          userName: user ? user.name : 'Unknown User', // Add user name to the order
+        };
+      })
+    );
+
+    res.json(detailedWallets);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+router.post('/wallets/transactions', authenticateToken, authorizeAdmin, async (req, res) => {
+  const { id } = req.body;
+  try {
+    const transactions = await Wallet.findById(id).select('transactions');
+
+    if (!transactions) {
+      return res.status(404).json({ message: 'Wallet not found' });
+    }
+
+    res.json(transactions);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+module.exports = router;

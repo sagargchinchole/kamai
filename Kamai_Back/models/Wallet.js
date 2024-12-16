@@ -39,6 +39,16 @@ const walletSchema = new mongoose.Schema({
         type: String,
         required: true,
       },
+      paymentMode:{
+        type:String,
+        enum: ["cdm","upi","imps"]
+      },
+      accountNo:{
+        type:String
+      },
+      upi:{
+        type:String
+      },
     },
   ],
 });
