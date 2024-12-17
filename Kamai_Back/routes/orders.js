@@ -5,6 +5,7 @@ const { authenticateToken, authorizeAdmin } = require('./auth');
 const Order = require('../models/Order');
 const Job = require('../models/Job');
 const User = require('../models/User');
+const Wallet = require('../models/Wallet');
 
 // Route to create an order when a job is accepted
 router.post('/orders', authenticateToken, async (req, res) => {
@@ -123,19 +124,64 @@ router.patch('/orders/:id', authenticateToken, async (req, res) => {
 
 router.patch('/orders', authenticateToken, authorizeAdmin, async (req, res) => {
   try {
-    const { orderId, status, productOrderId, shippingId, otp, mobileLast4Digits } = req.body;
+    const { id, status, productOrderId, trackingId, otp, lastFourDigit, deliveryDate } = req.body;
 
+    const order = await Order.findById(id);
+    if (order.status === "delivered" && status === "delivered") {
+      return res.status(500).json({ message: "Order already marked as delivered." })
+    }
+    if (order.status === "cancelled" && status === "cancelled") {
+      return res.status(500).json({ message: "Order already marked as delivered." })
+    }
     const updatedOrder = await Order.findByIdAndUpdate(
-      orderId,
-      { status, productOrderId, shippingId, otp, mobileLast4Digits },
+      id,
+      { status, productOrderId, trackingId, otp, lastFourDigit, deliveryDate },
       { new: true }
     );
-
     if (!updatedOrder) return res.status(404).json({ message: 'Order not found' });
-    res.json(updatedOrder);
+
+    if (updatedOrder.status === "delivered") {
+      creditUserWallet(updatedOrder.userId, updatedOrder._id, updatedOrder.jobId)
+      return res.json({ message: "Order marked as delivered and amount credited to users wallet." });
+    }
+    if (updatedOrder.status === "cancelled") {
+      return res.json({ message: "Order marked as cancelled." });
+    }
+    return res.json(updatedOrder);
   } catch (error) {
     console.error('Error updating order:', error);
     res.status(500).json({ message: 'Failed to update order' });
   }
 });
+
+
+const creditUserWallet = async (userId, orderId, jobId) => {
+  try {
+    const wallet = await Wallet.findOne({ userId });
+    const order = await Order.findById(orderId);
+    const job = await Job.findById(jobId);
+    console.log("Wallet ID:" + wallet._id + " orderId:" + order._id + " jobId:" + job._id)
+    if (!wallet || !order || !job) {
+      return { message: 'Something went wrong.' };
+    }
+    console.log("wallet balance" + wallet.balance);
+    wallet.balance += job.returnAmount; // Add the amount to the wallet
+    console.log("job return amount" + job.returnAmount);
+    const balanceAmount = wallet.balance;
+    console.log("balance amount:" + balanceAmount);
+    wallet.transactions.push({
+      type: 'credit',
+      amount: job.returnAmount,
+      orderId,
+      description: 'Order delivered return amount',
+      balanceAmount
+    });
+
+    await wallet.save();
+    return wallet;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 module.exports = router;

@@ -19,7 +19,7 @@ const orderSchema = new mongoose.Schema({
   },
   status: {
     type: String,
-    enum: ['accepted','confirmed','shipped', 'ofd', 'delivered','canceled'],
+    enum: ['accepted','confirmed','shipped', 'ofd', 'delivered','cancelled'],
     default: 'accepted',
   },
   productOrderId:{

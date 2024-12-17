@@ -1,9 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const Wallet = require('../models/Wallet');
-const Order = require('../models/Order'); // Assuming you have an Order model
 const User = require('../models/User'); // Assuming you have a User model
 const { authenticateToken, authorizeAdmin } = require('./auth');
+const Job = require('../models/Job');
 
 // Get wallet details for a user
 router.get('/wallet/:userId', authenticateToken, authorizeAdmin, async (req, res) => {
@@ -42,6 +42,7 @@ router.post('/wallet/credit', authenticateToken, authorizeAdmin, async (req, res
     res.status(500).json({ error: error.message });
   }
 });
+
 
 // Debit amount from wallet when admin makes a bank payment
 router.post('/wallet/debit', authenticateToken, authorizeAdmin, async (req, res) => {
@@ -127,5 +128,4 @@ router.post('/wallets/transactions', authenticateToken, authorizeAdmin, async (r
     res.status(500).json({ error: error.message });
   }
 });
-
 module.exports = router;
