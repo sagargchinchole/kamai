@@ -20,7 +20,7 @@ router.post('/jobs', authenticateToken,authorizeAdmin, async (req, res) => {
   
 
 // Get all jobs
-router.get('/jobs', async (req, res) => {
+router.get('/jobs', authenticateToken, authorizeAdmin, async (req, res) => {
   try {
     const jobs = await Job.find();
     res.json(jobs);
@@ -29,7 +29,7 @@ router.get('/jobs', async (req, res) => {
   }
 });
 
-router.get('/activeJobs', async (req, res) => {
+router.get('/activeJobs', authenticateToken, async (req, res) => {
   try {
     const jobs = await Job.find({ status: 'active' });
     res.json(jobs);
@@ -39,7 +39,7 @@ router.get('/activeJobs', async (req, res) => {
 });
 
 // Route to get a job by ID
-router.get('/jobs/:id', async (req, res) => {
+router.get('/jobs/:id', authenticateToken, async (req, res) => {
   try {
     const jobId = req.params.id;
     const job = await Job.findById(jobId);

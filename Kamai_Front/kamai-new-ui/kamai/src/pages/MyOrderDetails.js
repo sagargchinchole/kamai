@@ -1,4 +1,4 @@
-import { Box, Button, Card, CardContent, Stack, Step, StepLabel, Stepper, TextField, Typography } from '@mui/material'
+import { Box, Button, Card, CardContent, Stack, Step, StepButton, StepLabel, Stepper, TextField, Typography } from '@mui/material'
 import axios from 'axios';
 import React, { useEffect, useState } from 'react'
 import Grid from '@mui/material/Grid2';
@@ -64,8 +64,10 @@ export default function MyOrderDetails() {
       payload.status = "shipped";
     } else if (currentStatus === 'shipped') {
       const fields = inputValue.split('-');
+      if(fields.size === 2) {
+        payload.mobileLast4Digits = fields[1]
+      }
       payload.otp = fields[0];
-      payload.mobileLast4Digits = fields[1]
       payload.status = "ofd";
     }
     const response = await axios.patch(`${process.env.REACT_APP_BACKEND_URL}/api/orders/${id}`, payload,
@@ -84,11 +86,14 @@ export default function MyOrderDetails() {
           <Stepper activeStep={statusMap[order.status]} alternativeLabel>
             {steps.map((label) => (
               <Step key={label}>
-                <StepLabel>{label}</StepLabel>
+                <StepButton color="inherit">
+                {label}
+                </StepButton>
               </Step>
             ))}
           </Stepper>
           {(order.status === 'delivered' || order.status === "ofd") ? <></> :
+          <Stack direction={'column'} spacing={0.5}>
             <Grid container spacing={2} sx={{ mt: 2 }} alignItems="center">
               {/* TextField */}
               <Grid item xs={8}>
@@ -121,6 +126,12 @@ export default function MyOrderDetails() {
                 </Button>
               </Grid>
             </Grid>
+            {order.status === 'shipped' && (
+              <Typography variant='caption'>
+                Enter the otp and mobile last 4 digit separated by '-' <br/>(e.g. 123456-4477)
+              </Typography>
+            )}
+            </Stack>
           }
         </Box>
       </Card>

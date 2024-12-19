@@ -26,7 +26,7 @@ router.post('/orders', authenticateToken, async (req, res) => {
     // Create a new order
     const order = new Order({ userId, jobId });
     await order.save();
-    res.status(201).json({ message: 'Order accepted', jobUrl: job.link });
+    res.status(201).json({ message: 'Order accepted', jobUrl: job.link, _id: order._id });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

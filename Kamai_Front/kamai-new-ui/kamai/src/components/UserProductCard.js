@@ -9,7 +9,7 @@ import CardActionArea from '@mui/material/CardActionArea';
 import Box from '@mui/material/Box';
 import CardActions from '@mui/material/CardActions';
 import axios from 'axios';
-import { Link as RouterLink } from 'react-router-dom';
+import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import { Dialog, Link as MuiLink, DialogTitle, DialogContent, DialogContentText, DialogActions } from '@mui/material';
 const ProductCard = ({ card }) => {
 
@@ -26,7 +26,7 @@ const ProductCard = ({ card }) => {
 
     const [open, setOpen] = React.useState(false);
     const [dlgMessage, setDlgMessage] = React.useState('');
-
+    const navigate = useNavigate();
     const handleAccept = async () => {
         try {
             const token = localStorage.getItem('token');
@@ -37,6 +37,7 @@ const ProductCard = ({ card }) => {
             );
             //alert('Job accepted! Order created.');
             setDlgMessage('Deal Accepted.');
+            navigate(`/myOrders/${response.data._id}`);
             setOpen(true);
             window.open(response.data.jobUrl, '_blank');
 
@@ -54,13 +55,13 @@ const ProductCard = ({ card }) => {
 
     return (
         <Box>
-            <Card sx={{ width: 300, height: 450 }}>
+            <Card sx={{ width: 170, height: 320 }}>
                 <ActiveDealLink id={card._id}>
-                    <CardActionArea sx={{ height: 400 }}>
+                    <CardActionArea sx={{ height: 270 }}>
                         <Box>
                             <CardMedia
                                 component="img"
-                                height="250"
+                                height="150"
                                 image={card.imageLink}
                                 sx={{ padding: "1em 1em 0 1em", objectFit: "contain" }}
                                 alt="green iguana"
@@ -89,7 +90,7 @@ const ProductCard = ({ card }) => {
                             </Box>
                         </Box>
                         <CardContent>
-                            <Typography gutterBottom variant="h6" component="div">
+                            <Typography gutterBottom variant="body1" component="div">
                                 {card.title}
                             </Typography>
                             <Typography variant="body2" sx={{ color: 'text.secondary' }}>

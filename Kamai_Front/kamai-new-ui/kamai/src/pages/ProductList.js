@@ -8,10 +8,12 @@ import axios from "axios";
 const ProductList = () => {
 
   const [jobs, setJobs] = useState([]);
+  const token = localStorage.getItem('token');
   useEffect(() => {
     const fetchJobs = async () => {
       try {
-        const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/activeJobs`);
+        const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/activeJobs`,
+          { headers: { Authorization: `Bearer ${token}` } });
         setJobs(response.data);
       } catch (error) {
         console.log(error);
