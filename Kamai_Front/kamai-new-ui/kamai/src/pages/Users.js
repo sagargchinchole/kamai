@@ -111,6 +111,7 @@ const columns = [
 export default function Users() {
 
   const defualtFormData = {
+    _id:"",
     name:"",
     email:"",
     password:"",
@@ -144,15 +145,20 @@ export default function Users() {
     if (response.status === 201)
       setOpenSnackbar(true);
     }
-    // else {
-    //   const response = await axios.put(
-    //     `${process.env.REACT_APP_BACKEND_URL}/api/jobs/${formData._id}`,
-    //     { title, description, link, platform, returnAmount, orderAmount },
-    //     { headers: { Authorization: `Bearer ${token}` } }
-    //   );
-    //   if (response.status === 200)
-    //     setOpenSnackbar(true);
-    // }
+    else {
+      const response = await axios.put(
+        `${process.env.REACT_APP_BACKEND_URL}/api/users`,
+        { 
+          userId: formData._id,
+          name: formData.name, 
+          email: formData.email,
+          password: formData.password
+         },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      if (response.status === 200)
+        setOpenSnackbar(true);
+    }
     setOpen(false);
   };
 

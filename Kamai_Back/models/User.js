@@ -8,6 +8,8 @@ const userSchema = new mongoose.Schema({
   upi:{ type: String },
   accountNo:{ type: String },
   ifsc:{ type: String },
+  bank:{type: String},
+  accountName: {type: String}
 });
 
 const User = mongoose.model('User', userSchema);

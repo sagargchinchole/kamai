@@ -128,4 +128,32 @@ router.post('/wallets/transactions', authenticateToken, authorizeAdmin, async (r
     res.status(500).json({ error: error.message });
   }
 });
+
+router.delete('/wallets/transactions', authenticateToken, authorizeAdmin, async (req, res) => {
+  const { id, transactionId } = req.body;
+  try {
+    const wallet = await Wallet.findById(id);
+
+    if (!wallet) {
+      return res.status(404).json({ message: 'Wallet not found' });
+    }
+    
+    const transactionIndex = wallet.transactions.findIndex(
+      (transaction) => transaction._id.toString() === transactionId
+    );
+
+    if (transactionIndex === -1) {
+      return res.status(404).json({ message: 'Transaction not found' });
+    }
+    const transactionAmount = wallet.transactions[transactionIndex].amount;
+    wallet.transactions.splice(transactionIndex, 1);
+    wallet.balance += transactionAmount;
+    await wallet.save();
+    res.json({
+      message: 'Transaction deleted successfully',
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
 module.exports = router;

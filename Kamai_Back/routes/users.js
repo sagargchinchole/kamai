@@ -39,17 +39,30 @@ router.post('/users', authenticateToken, authorizeAdmin, async (req, res) => {
 });
 
 
-router.put('/profile', authenticateToken, async (req, res) => {
-    const userId = req.user.id;
-    const { name, email, bio } = req.body;
-  
+router.put('/users', authenticateToken, authorizeAdmin, async (req, res) => {
+    
+    const { userId, name, email, password, mobile } = req.body;
+    const hashedPassword = await bcrypt.hash(password, 10);
     try {
       const updatedUser = await User.findByIdAndUpdate(
         userId,
-        { name, email, bio },
+        { name, email, mobile, password: hashedPassword },
         { new: true }
       );
       res.json(updatedUser);
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  router.post('/userProfile', authenticateToken, authorizeAdmin, async (req, res) => {
+    try {
+      const {walletId} = req.body;
+      const wallet = await Wallet.findById(walletId);
+      const user = await User.findById(wallet.userId);
+      if (!user) return res.sendStatus(400);
+      const { upi, accountNo, ifsc, bank, accountName } = user; 
+      res.json({upi, accountNo, ifsc, bank, accountName});
     } catch (error) {
       res.status(500).json({ message: error.message });
     }

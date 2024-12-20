@@ -30,7 +30,8 @@ router.get('/profile', authenticateToken, async (req, res) => {
   try {
     const user = await User.findById(req.user.id);
     if (!user) return res.sendStatus(400);
-    res.json({ name: user.name, email: user.email, role: user.role, userId: user.id });
+    const { upi, accountNo, ifsc, bank, accountName } = user; 
+    res.json({upi, accountNo, ifsc, bank, accountName});
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -38,11 +39,11 @@ router.get('/profile', authenticateToken, async (req, res) => {
 
 // Update User Profile
 router.put('/profile', authenticateToken, async (req, res) => {
-  const { name, email } = req.body;
+  const { upi, accountNo, ifsc, bank, accountName } = req.body;
 
   try {
-    const user = await User.findByIdAndUpdate(req.user.id, { name, email }, { new: true });
-    res.json({ message: 'Profile updated successfully', user });
+    const user = await User.findByIdAndUpdate(req.user.id, { upi, accountNo, ifsc, bank, accountName }, { new: true });
+    res.json({ message: 'Bank details updated successfully'});
   } catch (error) {
     res.status(400).json({ message: error.message });
   }

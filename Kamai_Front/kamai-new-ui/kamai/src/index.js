@@ -13,6 +13,7 @@ import ProductList from './pages/ProductList';
 import MyOrders from './pages/MyOrders';
 import MyWallet from './pages/MyWallet';
 import MyOrderDetails from './pages/MyOrderDetails';
+import BankDetailsPage from './pages/BankDetails';
 
 const router = createBrowserRouter([
   {
@@ -61,6 +62,10 @@ const router = createBrowserRouter([
           {
             path: "wallet",
             Component: MyWallet
+          },
+          {
+            path:"bank-details",
+            Component: BankDetailsPage
           }
         ]
       }

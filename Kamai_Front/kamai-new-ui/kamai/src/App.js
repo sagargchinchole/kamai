@@ -8,6 +8,7 @@ import PaymentIcon from '@mui/icons-material/Payment';
 import { useNavigate } from 'react-router-dom';
 import { SessionProvider, useSession } from './SessionContext';
 import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
+import AccountBalanceIcon from '@mui/icons-material/AccountBalance';
 
 const NAVIGATION = {
   admin: [
@@ -20,6 +21,7 @@ const NAVIGATION = {
     { segment: "activeDeals", title: "Active Deals", icon: <DashboardIcon /> },
     { segment: "myOrders", title: "My Orders", icon: <ShoppingCartIcon /> },
     { segment: "wallet", title: "My Wallet", icon: <AccountBalanceWalletIcon /> },
+    { segment: "bank-details", title: "Bank Details", icon: <AccountBalanceIcon /> },
   ],
 };
 
