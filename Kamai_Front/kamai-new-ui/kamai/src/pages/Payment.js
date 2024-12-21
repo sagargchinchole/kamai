@@ -43,14 +43,30 @@ export default function Payment() {
               icon={<Tooltip title="Delete Transaction"><DeleteIcon color='primary' /></Tooltip>}
               label="History"
               className="textPrimary"
-              // onClick={}
+              onClick={()=>handleDeleteTransaction(id)}
               color="inherit"
             />
           ];
         },
       },
-  ]
-
+  ];
+  
+  const handleDeleteTransaction = async (id) => {
+    const response = await axios.delete(`${process.env.REACT_APP_BACKEND_URL}/api/wallets/transactions`,
+      {
+        data: { id: currentWalletId, transactionId: id },
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if(response.status === 200)
+      {
+        alert(response.data.message);
+      }
+      else
+      {
+        alert("Something went wrong..")
+      }
+  };
+  
   const columns = [
     { field: 'userName', headerName: 'User Name', width: 125 },
     {
@@ -96,8 +112,8 @@ export default function Payment() {
     const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/wallets/transactions`,
       { id }, { headers: { Authorization: `Bearer ${token}` } });
     setTransactions(response.data.transactions.filter(transaction => transaction.type === 'debit'));
-    console.log("transactions are " + transactions);
     setIsHistoryClicked(true);
+    setCurrentWalletId(id);
   };
 
   const handleDetailsClick = (id) => {

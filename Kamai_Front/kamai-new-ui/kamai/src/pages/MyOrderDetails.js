@@ -92,7 +92,7 @@ export default function MyOrderDetails() {
               </Step>
             ))}
           </Stepper>
-          {(order.status === 'delivered' || order.status === "ofd") ? <></> :
+          {(order.status === 'delivered' || order.status === "ofd" || order.status === "cancelled") ? <></> :
           <Stack direction={'column'} spacing={0.5}>
             <Grid container spacing={2} sx={{ mt: 2 }} alignItems="center">
               {/* TextField */}

@@ -24,6 +24,10 @@ const router = createBrowserRouter([
         Component: Layout,
         children: [
           {
+            index: true, // Marks this route as the default child route
+            element: <Navigate to="/activeDeals" replace />,
+          },
+          {
             path: "/deals",
             Component: AdminProductList
           },

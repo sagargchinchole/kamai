@@ -82,6 +82,14 @@ router.get('/wallet', authenticateToken, async (req, res) => {
   try {
     const wallet = await Wallet.findOne({ userId }).populate({
       path: "transactions",
+      populate: {
+        path: "orderId",
+        populate: {
+          path: "jobId",
+          select: "title", // Only include the title field from the job document
+        },
+        select: "_id"
+      },
       options: { sort: { date: -1 } },
     });
 

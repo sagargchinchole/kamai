@@ -49,11 +49,11 @@ export default function MyWallet() {
                 <Card sx={{ width: 340 }}>
                   <CardContent>
                     <Stack direction={'row'} >
-                      <Box>
-                        <Typography variant="body2">{transaction.description}</Typography>
+                      <Box maxWidth={230}>
+                        <Typography variant="body2">{transaction.type==="credit" ? transaction.orderId?.jobId?.title : "PAID"}</Typography>
                           {transaction.orderId && (
                         <Typography variant="caption" color="textSecondary">
-                          <Link href={`/myOrders/${transaction.orderId}`}>Order ID: {transaction.orderId}</Link>
+                          <Link href={`/myOrders/${transaction.orderId._id}`}>Order ID: {transaction.orderId._id}</Link>
                         </Typography>)}
                         <br/><Typography variant='caption'>{formatDate(transaction.date)}</Typography>
                       </Box>
