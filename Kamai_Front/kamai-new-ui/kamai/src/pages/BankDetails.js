@@ -82,7 +82,7 @@ const BankDetailsPage = () => {
                 <TextField
                   fullWidth
                   label="Account Number"
-                  name="accountNumber"
+                  name="accountNo"
                   value={bankDetails.accountNo}
                   onChange={handleChange}
                 />
