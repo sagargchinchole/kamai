@@ -60,7 +60,7 @@ export default function MyOrderDetails() {
       payload.productOrderId = inputValue;
       payload.status = "confirmed";
     } else if (currentStatus === 'confirmed') {
-      payload.shippingId = inputValue;
+      payload.trackingId = inputValue;
       payload.status = "shipped";
     } else if (currentStatus === 'shipped') {
       const fields = inputValue.split('-');
