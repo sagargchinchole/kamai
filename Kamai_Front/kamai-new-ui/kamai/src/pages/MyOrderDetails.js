@@ -1,4 +1,4 @@
-import { Box, Button, Card, CardContent, Stack, Step, StepButton, StepLabel, Stepper, TextField, Typography } from '@mui/material'
+import { Box, Button, Card, CardContent, CircularProgress, Stack, Step, StepButton, StepLabel, Stepper, TextField, Typography } from '@mui/material'
 import axios from 'axios';
 import React, { useEffect, useState } from 'react'
 import Grid from '@mui/material/Grid2';
@@ -7,9 +7,9 @@ import CopyToClipboard from 'react-copy-to-clipboard';
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import ArrowCircleDownIcon from '@mui/icons-material/ArrowCircleDown';
 import ArrowCircleUpIcon from '@mui/icons-material/ArrowCircleUp';
+import Countdown from 'react-countdown';
 
 export default function MyOrderDetails() {
-
   const navigate = useNavigate();
   const token = localStorage.getItem('token');
   const session = JSON.parse(localStorage.getItem('session'));
@@ -65,7 +65,7 @@ export default function MyOrderDetails() {
       payload.status = "shipped";
     } else if (currentStatus === 'shipped') {
       const fields = inputValue.split('-');
-      if(fields.size === 2) {
+      if (fields.size === 2) {
         payload.mobileLast4Digits = fields[1]
       }
       payload.otp = fields[0];
@@ -80,6 +80,18 @@ export default function MyOrderDetails() {
     setInputValue(event.target.value);
   };
 
+  // Custom renderer to format countdown as MM:SS
+  const countdownRenderer = ({ minutes, seconds, completed }) => {
+    if (completed) {
+      return <Typography color="error">Deal expired!</Typography>;
+    }
+    return (
+      <Typography variant='caption'>
+        {String(minutes).padStart(2, '0')}:{String(seconds).padStart(2, '0')}
+      </Typography>
+    );
+  };
+
   return (
     <Box>
       <Card sx={{ m: 1 }}>
@@ -88,7 +100,7 @@ export default function MyOrderDetails() {
             {steps.map((label) => (
               <Step key={label}>
                 <StepButton color="inherit">
-                {label}
+                  {label}
                 </StepButton>
               </Step>
             ))}
@@ -100,43 +112,43 @@ export default function MyOrderDetails() {
             {order.lastFourDigit && (<Typography variant='body2'><b>Mobile Last 4 digit : {order.lastFourDigit}</b></Typography>)}
           </Stack>
           {(order.status === 'delivered' || order.status === "ofd" || order.status === "cancelled") ? <></> :
-          <Stack direction={'column'} spacing={0.5}>
-            <Grid container spacing={2} sx={{ mt: 2 }} alignItems="center">
-              {/* TextField */}
-              <Grid item xs={8}>
-                <TextField
-                  id="outlined-basic"
-                  label={TextFieldMap[order.status]}
-                  variant="outlined"
-                  fullWidth
-                  sx={{
-                    height: '40',
-                    '& .MuiOutlinedInput-root': { height: '40' }, // Ensure consistent height
-                  }}
-                  value={inputValue}
-                  onChange={handleInputChange}
-                />
+            <Stack direction={'column'} spacing={0.5}>
+              <Grid container spacing={2} sx={{ mt: 2 }} alignItems="center">
+                {/* TextField */}
+                <Grid item xs={8}>
+                  <TextField
+                    id="outlined-basic"
+                    label={TextFieldMap[order.status]}
+                    variant="outlined"
+                    fullWidth
+                    sx={{
+                      height: '40',
+                      '& .MuiOutlinedInput-root': { height: '40' }, // Ensure consistent height
+                    }}
+                    value={inputValue}
+                    onChange={handleInputChange}
+                  />
+                </Grid>
+                {/* Button */}
+                <Grid item xs={4}>
+                  <Button
+                    variant="contained"
+                    size="small"
+                    fullWidth
+                    sx={{
+                      height: 40, // Match TextField height
+                    }}
+                    onClick={() => handleSave(order.status)}
+                  >
+                    Save
+                  </Button>
+                </Grid>
               </Grid>
-              {/* Button */}
-              <Grid item xs={4}>
-                <Button
-                  variant="contained"
-                  size="small"
-                  fullWidth
-                  sx={{
-                    height: 40, // Match TextField height
-                  }}
-                  onClick={() => handleSave(order.status)}
-                >
-                  Save
-                </Button>
-              </Grid>
-            </Grid>
-            {order.status === 'shipped' && (
-              <Typography variant='caption'>
-                Enter the otp and mobile last 4 digit separated by '-' <br/>(e.g. 123456-4477)
-              </Typography>
-            )}
+              {order.status === 'shipped' && (
+                <Typography variant='caption'>
+                  Enter the otp and mobile last 4 digit separated by '-' <br />(e.g. 123456-4477)
+                </Typography>
+              )}
             </Stack>
           }
         </Box>
@@ -150,6 +162,27 @@ export default function MyOrderDetails() {
                 {order.name}
               </Typography>
               <img src={`/assets/${order?.platform?.toLowerCase().replace(/\s+/g, '')}.png`} height='30' width='70' ></img>
+              {order.status==="accepted" && order.expiryDate ? <Box position="relative" display="inline-flex">
+                <CircularProgress
+                  variant="determinate"
+                  value={100} // Full circle
+                  thickness={2} // Thickness of the circle's border
+                  color="primary"
+                />
+                <Box
+                  position="absolute"
+                  top="25%"
+                  left="50%"
+                  style={{
+                    transform: 'translate(-50%, -50%)',
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}
+                >
+                  <Countdown date={new Date(order.expiryDate)} renderer={countdownRenderer} />
+                </Box>
+              </Box>: <></>}
             </Stack>
             <Typography variant='caption'><b>Order Id: {order.orderId}</b></Typography>
             <Typography variant='caption'><b>Status: {order.status?.toUpperCase()}</b></Typography>

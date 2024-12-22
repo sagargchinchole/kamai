@@ -38,6 +38,9 @@ const orderSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+  expiryDate: {
+    type: Date
+  },
   deliveryDate: {
     type: Date,
   },
@@ -60,6 +63,10 @@ orderSchema.pre('save', async function (next) {
 
     // Format the order ID with the prefix "TZ" and padded number
     order.orderId = `TZ${String(counter.seq).padStart(9, '0')}`;
+    
+    if (!this.expiryDate && this.acceptedDate) {
+      this.expiryDate = new Date(this.acceptedDate.getTime() + 40 * 60 * 1000); // Add 40 minutes
+    }
     next();
   } catch (error) {
     next(error);
