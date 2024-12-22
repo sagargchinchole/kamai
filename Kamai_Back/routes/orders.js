@@ -104,12 +104,12 @@ router.get('/orders/:id', authenticateToken, async (req, res) => {
 
 router.patch('/orders/:id', authenticateToken, async (req, res) => {
   try {
-    const { status, productOrderId, shippingId, otp, mobileLast4Digits } = req.body;
+    const { status, productOrderId, trackingId, otp, mobileLast4Digits } = req.body;
 
     if (status != "delivered") {
       const updatedOrder = await Order.findByIdAndUpdate(
         req.params.id,
-        { status, productOrderId, shippingId, otp, mobileLast4Digits },
+        { status, productOrderId, trackingId, otp, mobileLast4Digits },
         { new: true }
       );
 

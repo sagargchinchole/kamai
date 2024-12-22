@@ -54,7 +54,8 @@ export default function MyOrderDetails() {
     fetchOrderDetails();
   }, []);
 
-  const handleSave = async (currentStatus) => {
+  const handleSave = async (e, currentStatus) => {
+    e.preventDefault();
     const payload = {};
     if (currentStatus === 'accepted') {
       payload.productOrderId = inputValue;
