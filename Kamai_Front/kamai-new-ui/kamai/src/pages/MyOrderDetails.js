@@ -92,6 +92,12 @@ export default function MyOrderDetails() {
               </Step>
             ))}
           </Stepper>
+          <Stack direction={'column'} spacing={0.5} marginTop={2} marginLeft={2}>
+            {order.productOrderId && (<Typography variant='body2'><b>{order.platform} Order ID : {order.productOrderId}</b></Typography>)}
+            {order.trackingId && (<Typography variant='body2'><b>Tracking ID : {order.trackingId}</b></Typography>)}
+            {order.otp && (<Typography variant='body2'><b>OTP : {order.otp}</b></Typography>)}
+            {order.lastFourDigit && (<Typography variant='body2'><b>Mobile Last 4 digit : {order.lastFourDigit}</b></Typography>)}
+          </Stack>
           {(order.status === 'delivered' || order.status === "ofd" || order.status === "cancelled") ? <></> :
           <Stack direction={'column'} spacing={0.5}>
             <Grid container spacing={2} sx={{ mt: 2 }} alignItems="center">
@@ -110,7 +116,6 @@ export default function MyOrderDetails() {
                   onChange={handleInputChange}
                 />
               </Grid>
-
               {/* Button */}
               <Grid item xs={4}>
                 <Button

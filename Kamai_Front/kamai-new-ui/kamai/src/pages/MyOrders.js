@@ -14,12 +14,14 @@ const MyOrders = () => {
       try {
         const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/myOrders`,
           { headers: { Authorization: `Bearer ${token}` } });
+          
+        response.data.sort((a, b) => new Date(b.acceptedDate) - new Date(a.acceptedDate));
         setMyOrders(response.data);
         console.log(Orders)
       } catch (error) {
         console.log(error);
       }
-    };
+    }; 
 
     fetchOrders();
   }, []);
