@@ -30,6 +30,7 @@ export default function Payment() {
     { field: 'accountNo', headerName: 'AccountNo', width: 125 },
     { field: 'upi', headerName: 'UPI', width: 125 },
     { field: 'paymentMode', headerName: 'Mode', width: 80 },
+    { field: 'description', headerName: 'Description', width: 125 },
     ,
       {
         field: 'actions',
@@ -179,7 +180,6 @@ export default function Payment() {
         open={payFormOpen}
         onClose={handlPayFormeClose}
       />
-
     </Paper>
   );
 }

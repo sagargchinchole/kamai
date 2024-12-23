@@ -39,7 +39,8 @@ const orderSchema = new mongoose.Schema({
     default: Date.now,
   },
   expiryDate: {
-    type: Date
+    type: Date,
+    index: { expires: 0 },
   },
   deliveryDate: {
     type: Date,

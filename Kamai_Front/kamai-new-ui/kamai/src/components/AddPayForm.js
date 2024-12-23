@@ -25,6 +25,7 @@ export default function AddPayForm({ open, onClose, id }) {
     amount: "",
     mode: "",
     id: "",
+    description:""
   };
 
   const [formData, setFormData] = useState(defaultPayData);
@@ -74,6 +75,16 @@ export default function AddPayForm({ open, onClose, id }) {
               variant="outlined"
               name="upi"
               value={formData.upi}
+              onChange={handleChange}
+            />
+            <TextField
+              fullWidth
+              multiline
+              margin="dense"
+              label="Description"
+              variant="outlined"
+              name="description"
+              value={formData.description}
               onChange={handleChange}
             />
             <TextField

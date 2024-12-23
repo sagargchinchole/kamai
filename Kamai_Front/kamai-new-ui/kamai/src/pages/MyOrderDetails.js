@@ -83,7 +83,7 @@ export default function MyOrderDetails() {
   // Custom renderer to format countdown as MM:SS
   const countdownRenderer = ({ minutes, seconds, completed }) => {
     if (completed) {
-      return <Typography color="error">Deal expired!</Typography>;
+      navigate('/myOrders');
     }
     return (
       <Typography variant='caption'>
@@ -99,9 +99,9 @@ export default function MyOrderDetails() {
           <Stepper activeStep={statusMap[order.status]} alternativeLabel>
             {steps.map((label) => (
               <Step key={label}>
-                <StepButton color="inherit">
+                <StepLabel color="inherit">
                   {label}
-                </StepButton>
+                </StepLabel>
               </Step>
             ))}
           </Stepper>
@@ -161,8 +161,10 @@ export default function MyOrderDetails() {
               <Typography>
                 {order.name}
               </Typography>
+              <Stack direction={'column'} spacing={1}>
               <img src={`/assets/${order?.platform?.toLowerCase().replace(/\s+/g, '')}.png`} height='30' width='70' ></img>
-              {order.status==="accepted" && order.expiryDate ? <Box position="relative" display="inline-flex">
+              {order.status==="accepted" && order.expiryDate ? 
+              <Box position="relative" display="inline-flex">
                 <CircularProgress
                   variant="determinate"
                   value={100} // Full circle
@@ -171,8 +173,8 @@ export default function MyOrderDetails() {
                 />
                 <Box
                   position="absolute"
-                  top="25%"
-                  left="50%"
+                  top="50%"
+                  left="30%"
                   style={{
                     transform: 'translate(-50%, -50%)',
                     display: 'flex',
@@ -183,6 +185,7 @@ export default function MyOrderDetails() {
                   <Countdown date={new Date(order.expiryDate)} renderer={countdownRenderer} />
                 </Box>
               </Box>: <></>}
+              </Stack>
             </Stack>
             <Typography variant='caption'><b>Order Id: {order.orderId}</b></Typography>
             <Typography variant='caption'><b>Status: {order.status?.toUpperCase()}</b></Typography>

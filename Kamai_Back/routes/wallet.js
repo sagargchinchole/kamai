@@ -54,16 +54,12 @@ router.post('/wallet/debit', authenticateToken, authorizeAdmin, async (req, res)
       return res.status(404).json({ message: 'Wallet not found' });
     }
 
-    if (wallet.balance < amount) {
-      return res.status(400).json({ message: 'Insufficient wallet balance' });
-    }
-
     wallet.balance -= amount; // Deduct the amount from the wallet
     const balanceAmount = wallet.balance;
     wallet.transactions.push({
       type: 'debit',
       amount,
-      description: description || 'Admin payment to bank',
+      description: description || `Paid to ${accountNo || upi}`,
       balanceAmount,
       accountNo,
       paymentMode: mode,

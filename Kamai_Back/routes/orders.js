@@ -34,9 +34,15 @@ router.post('/orders', authenticateToken, async (req, res) => {
 
 // Route to get all orders for a specific user
 router.get('/myorders', authenticateToken, async (req, res) => {
-  const userId = req.user.id; // Assuming you're attaching the user ID to req.user in the authenticateToken middleware
-
+  const userId = req.user.id; 
+  const now = new Date();
   try {
+    await Order.deleteMany({
+      userId,
+      expiryDate: { $lte: now },
+      status: 'accepted',
+    });
+
     const orders = await Order.find({ userId }); // Populate with job details if needed
     const detailedOrders = await Promise.all(
       orders.map(async (order) => {
