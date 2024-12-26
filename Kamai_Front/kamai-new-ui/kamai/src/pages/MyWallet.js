@@ -22,8 +22,8 @@ export default function MyWallet() {
         const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/wallet`,
           { headers: { Authorization: `Bearer ${token}` } });
         setWallet(response.data);
-        response.data.transactions?.sort((a, b) => new Date(b.date) - new Date(a.date));
-        setTransactions(response.data.transactions);
+        var sortedTxn = response.data.transactions?.sort((a, b) => new Date(b.date) - new Date(a.date));
+        setTransactions(sortedTxn);
       } catch (error) {
         console.log(error);
       }
